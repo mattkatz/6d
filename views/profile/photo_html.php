@@ -1,0 +1,1 @@
+<?php echo $person->profile->photo_url;?>

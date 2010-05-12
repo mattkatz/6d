@@ -1,0 +1,191 @@
+/* v1.0 | 20080212 */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+body {
+	line-height: 16px;
+	width: 900px;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+	outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
+}
+del {
+	text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+html{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	background-color: rgb(200, 200,200);
+}
+body{
+	margin: 50px auto;
+	font: normal normal normal 12px/18px 'Lucida Grande', 'Lucida Sans Unicode', Arial, Verdana, sans-serif;
+	line-height: 1.5;
+	text-align: center;
+}
+header, footer, aside, nav, article, section, figure{
+	display: block;
+	position: relative;
+}
+h1{
+	font-size: 3em;
+}
+h2{
+	font-size: 2em;
+}
+h3{font-size: 1.8em;}
+h4{font-size: 1.6em;}
+h5{font-size: 1.5em;}
+h6{font-size: 1em;}
+
+a{outline: 0;}
+a img{border: 0; text-decoration: none;}
+a:link, a:visited{
+	padding: 0 1px;
+	text-decoration: none;
+}
+a:hover, a:active{
+	text-decoration: underline;
+}
+
+ul{
+	list-style: inside disc;
+	margin: 14px 0 17px 17px;
+}
+blockquote{font-style: italic;}
+#banner, #content, #footer{
+	margin: 0 auto;
+	text-align: left;
+}
+#banner{
+	text-indent: -9999px;
+	height: 1px;
+	font-size: 6px;
+}
+#content{
+	float: right;
+	padding: 30px 30px 30px 30px;
+	width: 550px;
+	color: rgb(153,153,153);
+	background: rgb(240, 240,240);
+	border-radius: 10px 10px;
+	-webkit-border-radius: 10px 10px;
+	-moz-border-radius: 10px 10px;
+	margin: 0 auto;
+}
+#author{
+	margin: 0 auto;
+	float: left;
+	width: 220px;
+	padding: 15px;
+	line-height: 25px;
+	font-size: 21px;
+	color: rgb(153,153,153);
+	background: rgb(240, 240,240);
+	border-radius: 10px 10px;
+	-webkit-border-radius: 10px 10px;
+	-moz-border-radius: 10px 10px;
+	text-align: left;
+}
+#author footer{
+	margin-top: 20px;
+}
+#author footer a{
+	font-size: 11px;
+}
+#author footer date{
+	font-size: 13px;
+	opacity: .8;
+	filter: alpha(opacity=80);
+}
+#author footer small{
+	display: block;
+	font-size: 11px;
+	text-align: center;
+}
+img.author{
+	width: 220px;
+	height: 220px;
+}
+article.link header{
+	font-size: 31px;
+}
+article.link section.entry-content{
+	margin: 0;
+	
+}
+#content article{
+	padding: 20px;
+	margin-top: 40px;
+	background: rgb(250,250,250);
+	border-radius: 10px 10px;
+	-webkit-border-radius: 10px 10px;
+	-moz-border-radius: 10px 10px;
+}
+#content article.first{
+	margin-top: 0;
+}
+article footer{
+	margin-top: 20px;
+}
+.hentry section article footer abbr, #content article footer abbr{
+	font-size: 11px;
+	color: rgb(100,100,100);
+	font-variant: small-caps;
+	position: absolute;
+	right: 3px;
+	bottom: 0;
+}
+#content article aside{
+	display: none;
+}
+nav.pages{
+	font-size: 23px;
+	width: 200px;
+	margin: 0 auto;
+}
+nav.pages a{
+	line-height: 23px;
+}

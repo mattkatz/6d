@@ -1,0 +1,50 @@
+#people input[type="checkbox"]{
+	display: none;
+}
+form.delete{
+	float: right;
+}
+form.delete button{
+	background: none;
+	cursor: default;
+	padding: 0;
+	margin: 0;
+}
+#groups{
+	width: 180px;
+	float: left;
+	height: 100%;
+}
+#people{
+	height: 100%;
+	float: left;
+	width: 180px;
+	position: relative;
+}
+input{
+	margin: 0;
+	padding: 0;
+	border: none;
+	box-shadow: 0 0 3px #333;
+	-webkit-box-shadow: 0 0 3px #333;
+	-moz-box-shadow: 0 0 3px #333;
+}
+#people footer{
+	position: absolute;
+}
+ul{
+	list-style-type: decimal;
+}
+li{
+	cursor: default;
+}
+#detail{
+	margin-left: 390px;
+}
+li.selected, li.selected a{
+	background: blue;
+	color: #fff;
+}
+li.selected button{
+	color: #fff;
+}
