@@ -121,8 +121,10 @@ class PostResource extends AppResource{
 					$post->id = null;
 				}
 				$post->created = date('c');
-				if($post->post_date === null || strlen($post->post_date) === 0){
+				if($post->post_date === null || strlen($post->post_date) === 0 || $post->post_date == 'today'){
 					$post->post_date = date('c');
+				}else{
+					
 				}
 				$post->body = $this->filterBody($post->body);
 				$post->title = $this->filterBody($post->title);

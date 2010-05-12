@@ -42,6 +42,7 @@ class PostsResource extends AppResource{
 								$person->url = null;
 							}
 							$this->posts = Post::findByPerson($person, $start, $this->limit, $this->sort_by, $this->sort_by_direction);
+							$this->title = "All Posts by " . $person->name;
 						}
 					}
 					break;
@@ -52,14 +53,18 @@ class PostsResource extends AppResource{
 						$this->page = 1;
 					}
 					$this->initializePosts($tag, $start, $this->limit, $this->sort_by, $this->sort_by_direction);
+					$this->title = 'All Posts';
 					break;
 			}
 		}else{
 			if($tag !== null){
+				$this->title = 'All Posts Tagged ' . $tag->text;
 				$this->posts = Post::findByTag($tag, $start, $this->limit, $this->sort_by, $this->sort_by_direction);
 			}else{
+				$this->title = 'All Posts';
 				$this->posts = Post::find($start, $this->limit, $this->sort_by, $this->sort_by_direction);			
 			}
+			
 		}
 		$this->output = $this->renderView('post/index');
 		return $this->renderView('layouts/default');
