@@ -3,7 +3,7 @@
 	$_appPath = str_replace('/tests/index.php', '', __FILE__);
 	$output = '';
 	set_include_path(get_include_path() . PATH_SEPARATOR . $_appPath . PATH_SEPARATOR);
-	require('AppConfiguration.php');
+	//require('AppConfiguration.php');
 	if(!isset($_SESSION))
 		$_SESSION = array();
 

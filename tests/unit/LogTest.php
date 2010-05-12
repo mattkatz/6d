@@ -8,22 +8,25 @@
 
         }
 		public function __destruct(){}
-				
+		public $path;
+		
 		public function setUp(){}
 		public function tearDown(){}
 		
 		public function testWriting(){
-			$segments = explode('/', __FILE__);
+			$segments = explode('/', str_replace('tests/', '', __FILE__));
 			array_pop($segments);
 			array_pop($segments);
-			$path_to_logs = implode('/', $segments) . '/logs/';
-			$log = new Log($path_to_logs, 5, false);
+			$this->path = implode('/', $segments) . '/logs/';
+			$log = new Log($this->path, 5, false);
+			$message = '';
 			try{
 				$log->write('test');				
 			}catch(Exception $e){
-				error_log($e);
+				$message = $e;
 			}
-			$this->assert(file_exists($path_to_logs . date("Ymd") . ".txt"), 'Testing writing to the log');
+			$this->assert(file_exists($this->path . date("Ymd") . ".txt"), 'Testing writing to the log.' . $message);
+			$log->delete();
 		}
     }
 ?>
