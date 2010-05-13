@@ -1,6 +1,6 @@
 {
 	"person":{
-		"photo_url":"<?php echo $person->profile->photo_url;?>"
+		"photo_url":"<?php echo ProfileResource::getPhotoUrl($person);?>"
 		, "name":"<?php echo $person->name;?>"
 		, "email":"<?php echo $person->email;?>"
 		, "address":"<?php echo $person->profile->address;?>"

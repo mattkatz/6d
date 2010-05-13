@@ -82,33 +82,55 @@
 				$output .= self::$error_html;
 			}
 			//error_log('request uri ' . $layout . ' ' . $_SERVER['REQUEST_URI']);
-			$output = $this->get_plugin_footers($output);
+			$output = $this->filterFooter($output);
+			return $output;
+		}		
+		protected function filterBody($text){
+			$post_filters = $this->getPlugins('plugins', 'PostPlugin');
+			foreach($post_filters as $filter){
+				$text = $filter->execute($text);
+			}
+			return $text;
+		}
+		
+		private function filterFooter($output){
+			$filters = $this->getPlugins('filters', 'FooterFilter');
+			foreach($filters as $filter){
+				$output = $filter->execute($output);
+			}
 			return $output;
 		}
-		private function traverse($path){
-			$root = $path;
-			$folder = dir($root);
-			$files = array();
-			$recursion_limit = 10;
-			$recursion_counter = 0;
-			if($folder != null){
-				while (false !== ($entry = $folder->read()) && $recursion_counter <= $recursion_limit){
+		
+		protected function getPlugins($folder_name, $name){
+			$files = $this->getFiles($folder_name, $name);
+			$plugins = array();
+			foreach($files as $file){
+				$parts = explode('/', $file);
+				$class_name = array_pop($parts);
+				$class_name = str_replace('.php', '', $class_name);
+				class_exists($class_name) || require($file);
+				$plugins[] = new $class_name();
+			}
+			return $plugins;
+		}
+		private function getFiles($folder_name, $name){
+			$root = FrontController::getDocumentRoot() . FrontController::getVirtualPath() . '/' . $folder_name;
+			$folders = $this->getFolders($root);
+			$plugin_paths = array();
+			foreach($folders as $folder){
+				$dir = dir($folder);
+				while(($entry = $dir->read()) !== false){
 					if(strpos($entry, '.') !== 0){
-						$recursion_counter++;
-						$file_name = $folder->path .'/'. $entry;
-						if(is_dir($file_name)){
-							$files[] = $this->traverse($file_name);						
-						}else{						
-							return $file_name;
+						$file_name = $dir->path . '/' . $entry;
+						if(!is_dir($file_name) && stripos($entry, $name . '_') !== false){
+							$plugin_paths[] = $file_name;
 						}
 					}
 				}
-				$folder->close();
 			}
-			return $files;
+			return $plugin_paths;
 		}
-		
-		private function get_plugin_folders($path){
+		private function getFolders($path){
 			$folders = array();
 			$folder = dir($path);
 			if($folder !== false){
@@ -122,61 +144,6 @@
 				}
 			}
 			return $folders;
-		}
-		protected function filterBody($text){
-			$plugins = $this->getPostPlugins();
-			foreach($plugins as $plugin){
-				$text = $plugin->execute($text);
-			}
-			return $text;
-		}
-		protected function getPostPlugins(){
-			$files = $this->getPostPluginFiles();
-			$plugins = array();
-			foreach($files as $file){
-				$parts = explode('/', $file);
-				$class_name = array_pop($parts);
-				$class_name = str_replace('.php', '', $class_name);
-				class_exists($class_name) || require($file);
-				$plugins[] = new $class_name();
-			}
-			return $plugins;
-		}
-		private function getPostPluginFiles(){
-			$root = str_replace('resources/AppResource.php', 'plugins', __FILE__);
-			$folders = $this->get_plugin_folders($root);
-			$plugin_paths = array();
-			foreach($folders as $folder){
-				$dir = dir($folder);
-				while(($entry = $dir->read()) !== false){
-					if(strpos($entry, '.') !== 0){
-						$file_name = $dir->path . '/' . $entry;
-						if(!is_dir($file_name) && stripos($entry, 'PostPlugin_') !== false){
-							$plugin_paths[] = $file_name;
-						}
-					}
-				}
-			}
-			
-			return $plugin_paths;
-		}
-		
-		private function get_plugin_footers($output){
-			$root = str_replace('resources/AppResource.php', 'plugins/', __FILE__);
-			$folders = $this->get_plugin_folders($root);
-			$footer_output = null;
-			foreach($folders as $folder){
-				if(file_exists($folder . '/footer.php')){
-					ob_start();
-					require($folder . '/footer.php');
-					$footer_output .= ob_get_contents();
-					ob_end_clean();
-				}
-			}
-			if($footer_output != null){
-				$output = String::replace('/<\/body>/i', $footer_output . '</body>', $output);
-			}
-			return $output;
 		}
 		public function getTitleFromOutput($output){
 			$matches = array();

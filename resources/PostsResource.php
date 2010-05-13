@@ -26,7 +26,7 @@ class PostsResource extends AppResource{
 		}
 		$start = ($this->page-1) * $this->limit;
 
-		$this->sort_by = 'post_date';
+		$this->sort_by = 'id';
 		$this->sort_by_direction = 'desc';
 		$tag = null;
 		if(count($this->url_parts) > 0){

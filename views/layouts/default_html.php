@@ -40,9 +40,9 @@
 
 		</header>
 		<aside id="author">
-			<?php $person = Person::findOwner();?>
+			<?php $person = Person::findOwner();$person->profile = unserialize($person->profile);?>
 			<a href="<?php echo FrontController::urlFor(null);?>" title="Go back to my home page">
-				<img src="<?php echo ProfileResource::getPhotoUrl($person);?>" alt="photo of {$person->name}" class="author" />
+				<img src="<?php echo ProfileResource::getPhotoUrl($person);?>" alt="photo of <?php echo $person->name;?>" class="author" />
 			</a>
 		  	<footer id="tweets"></footer>
 		</aside>

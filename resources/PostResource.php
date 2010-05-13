@@ -53,7 +53,7 @@ class PostResource extends AppResource{
 		}
 	}
 	public static function getAuthorUrl(Post $post){
-		$url = '';
+		$url = null;
 		if($post->source !== null && strlen($post->source) > 0){
 			$person = Person::findByUrl($post->source);
 			if($person !== null){
@@ -61,15 +61,16 @@ class PostResource extends AppResource{
 				$response = NotificationResource::sendNotification($person, 'profile.json', $data, 'get');
 				$response = json_decode($response);
 				$url = $response->person->photo_url;
-			}else{
-				$url = 'images/weeble.jpg';
 			}
 		}else{
 			$config = new AppConfiguration();
 			$person = Person::findByEmail($config->email);
 			$person->profile = unserialize($person->profile);
-			$url = ProfileResource::getPhotoUrl($person);
+			if($person->profile->photo_url !== null && strlen($person->profile->photo_url) > 0){
+				$url = ProfileResource::getPhotoUrl($person);
+			}
 		}
+		$url = ($url === null ? 'images/nophoto.png' : $url);
 		return $url;		
 	}
 	public function put(Post $post, $people = array(), $groups = array(), $make_home_page = false, $public_key = null, $photo_names = array()){
@@ -81,6 +82,21 @@ class PostResource extends AppResource{
 			}
 			
 			if($this->post !== null){
+				switch($post->post_date){
+					case('today'):
+						$post->post_date = date('c');
+						break;
+					case('tomorrow'):
+						$post->post_date = date('c', strtotime('+1 day'));
+						break;
+					case('yesterday'):
+						$post->post_date = date('c', strtotime('-1 day'));
+						break;
+					case('next week'):
+						$post->post_date = date('c', strtotime('+1 week'));
+						break;
+				}
+
 				list($post, $errors) = Post::save($post);
 				if($errors == null){
 					if($make_home_page){
@@ -121,10 +137,8 @@ class PostResource extends AppResource{
 					$post->id = null;
 				}
 				$post->created = date('c');
-				if($post->post_date === null || strlen($post->post_date) === 0 || $post->post_date == 'today'){
+				if($post->post_date === null || strlen($post->post_date) === 0 || $post->post_date === 'today'){
 					$post->post_date = date('c');
-				}else{
-					
 				}
 				$post->body = $this->filterBody($post->body);
 				$post->title = $this->filterBody($post->title);
