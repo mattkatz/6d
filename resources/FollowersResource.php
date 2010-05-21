@@ -49,14 +49,15 @@ class FollowersResource extends AppResource{
 				$site_path = String::replace('/\/$/', '', FrontController::$site_path);
 				$data = sprintf("email=%s&name=%s&url=%s&created=%s", urlencode($owner->email), urlencode($owner->name),  urlencode(str_replace('http://', '', $site_path)), urlencode(date('c')));
 				$response = NotificationResource::sendNotification($this->person, 'follower', $data, 'post');
-				UserResource::setUserMessage($response);
+				UserResource::setUserMessage($this->person->name . "'s site responded with " . $response);
+				$this->title = 'Request Sent!';
+				$this->output = $this->renderView('follower/confirmation');
 			}else{
+				$this->output = $this->renderView('follower/show', array('errors'=>$errors));
 				$errors['url'] = "I need the person's website address to follow them.";
 				UserResource::setUserMessage($errors['url']);
 			}
+			return $this->renderView('layouts/default', null);
 		}
-		$this->title = 'Follow someone';
-		$this->output = $this->renderView('follower/show', array('errors'=>$errors));
-		return $this->renderView('layouts/default', null);
 	}
 }

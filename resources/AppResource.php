@@ -3,6 +3,7 @@
 	class_exists('UserResource') || require('resources/UserResource.php');
 	class_exists('FrontController') || require('lib/FrontController.php');
 	class_exists('Post') || require('models/Post.php');
+	class_exists('Person') || require('models/Person.php');
 	class_exists('Setting') || require('models/Setting.php');
 	class_exists('NotificationCenter') || require('lib/NotificationCenter.php');
 	class AppResource extends Resource{
@@ -41,13 +42,22 @@
 				$this->config = new AppConfiguration();
 				try{
 					$this->settings = Setting::findAll();
+					$owner = Person::findOwner();
+					$owner->profile = unserialize($owner->profile);
+					$this->title = $owner->profile->site_name;
+					
 				}catch(Exception $e){}
 			}
+			try{
+				$this->owner = Person::findOwner();
+				$this->owner->profile = unserialize($this->owner->profile);
+			}catch(Exception $e){}
 		}
 		
 		public function __destruct(){
 			parent::__destruct();
 		}
+		public $owner;
 		public $resource_css;
 		public $resource_js;
 		protected $settings;

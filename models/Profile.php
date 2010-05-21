@@ -56,6 +56,14 @@ class Profile extends Object{
 	public function setCountry($val){
 		$this->country = $val;
 	}
+	
+	private $site_name;
+	public function getSite_name(){
+		return $this->site_name;
+	}
+	public function setSite_name($val){
+		$this->site_name = $val;
+	}
 
 
 }

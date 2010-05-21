@@ -1,8 +1,8 @@
 <ul>
 <?php foreach($people as $person):?>
-	<li rel="<?php echo $person->id;?>">
+	<li rel="<?php echo $person->id;?>" class="<?php echo $person->is_owner ? 'owner' : null;?>">
 	<?php if(!$person->is_owner):?>
-		<input type="checkbox" id="<?php echo $person->id;?>" name="people" value="{name: '<?php echo urlencode($person->name);?>', id: <?php echo $person->id;?>}" />
+		<input type="checkbox" id="person_checkbox_<?php echo $person->id;?>" name="people" value="<?php echo urlencode('{"name": "' . $person->name . '", "id":"' . $person->id . '", "is_owner":' . $person->is_owner . '}');?>" />
 	
 		<a href="<?php echo FrontController::urlFor('person/' . $person->id);?>" title="edit <?php echo $person->name;?>"><span rel="<?php echo $person->id;?>"><?php echo $person->name;?></span>
 		</a>

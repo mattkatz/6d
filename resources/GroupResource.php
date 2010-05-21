@@ -77,7 +77,7 @@ class GroupResource extends AppResource{
 			$this->groups = array();
 		}
 		$this->groups = array_merge(array($all_contacts), $this->groups);
-		$view = 'group/index';
+		$view = 'addressbook/index';
 		$this->output = $this->renderView($view);
 		return $this->renderView('layouts/default');
 	}

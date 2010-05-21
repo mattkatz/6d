@@ -16,5 +16,15 @@ $front_controller->delegate = $application;
 $logger = new Log('logs/', 0, false, null);
 set_error_handler(array($front_controller, 'errorDidHappen'));
 set_exception_handler(array($front_controller, 'exceptionDidHappen'));
-echo $front_controller->execute();
+$output = $front_controller->execute();
+$encoding = FrontController::getEncoding();
+if($encoding !== null){
+	header('Content-Encoding: ' . $encoding);
+	header('Etag: ' . md5($output));
+	echo "\x1f\x8b\x08\x00\x00\x00\x00\x00";
+	$size = strlen($output);
+	$output = gzcompress($output, 9);
+	$output = substr($output, 0, $size);
+}
+echo $output;
 ?>

@@ -513,9 +513,9 @@ UIController.AddressBook = function(views){
 	this.observeUrlField = function(){
 		if(this.friend_request_button){
 			if(this.url_field.get('value').length === 0){
-				this.friend_request_button.set('disabled', true);
+				this.friend_request_button.setAttribute('disabled', true);
 			}else{
-				this.friend_request_button.set('disabled', false);
+				this.friend_request_button.removeAttribute('disabled');
 			}
 		}
 	};

@@ -241,11 +241,11 @@ class Resource extends Object{
 					}
 					$obj = $value;
 				}
-			}else{				
+			}else{
 				$obj = self::valueWithCast(self::sanitize_magic_quotes($value), ($param->isDefaultValueAvailable() ? $param->getDefaultValue() : null));
 			}
 		}else{// This else block handles the case where you want to populate an object with a form that has the object property names
-			// as their field names. For instance, I want to save a "post" and the form field names match the attributes on a Post object.
+			// as their field names. For instance, I want to save a "post" and the form field names match the attributes on a Post object.			
 			if($ref_class != null){
 				$obj = $ref_class->newInstance(null);
 				$is_null = true;

@@ -1,7 +1,7 @@
 <?php
-interface_exists('IPlugin') || require('lib/interfaces/IPlugin.php');
+interface_exists('IPostFilter') || require('lib/filters/IPostFilter.php');
 class_exists('HTMLPurifier') || require('HTMLPurifier.php');
-class PostPlugin_HTMLPurifier implements IPlugin{
+class PostFilter_HTMLPurifier implements IPostFilter{
 	
 	public function __construct(){}
 	public function __destruct(){}

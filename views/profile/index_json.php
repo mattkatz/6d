@@ -8,5 +8,6 @@
 		, "state":"<?php echo $perosn->profile->state;?>"
 		, "zip":"<?php echo $person->profile->zip;?>"
 		, "country":"<?php echo $person->profile->country;?>"
+		, "site_name":"<?php echo $person->profile->site_name;?>"
 	}
 }

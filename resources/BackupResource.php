@@ -37,6 +37,9 @@ class BackupResource extends AppResource{
 			$post->id = null;
 			// TODO: Need to take this out.
 			$post->created = $post->date;
+			if($post->created === null){
+				$post->created = date('c');
+			}
 			$post->post_date = $post->date;
 			list($post, $errors) = Post::save($post);
 		}

@@ -3,13 +3,13 @@ class_exists('String') || require('lib/String.php');
 class_exists('Object') || require('lib/Object.php');
 class FrontController extends Object{
 	public function __construct($context){
-		$this->start_time = microtime(true);
+		self::$start_time = microtime(true);
 		$this->context = $context;
 		$this->initSitePath();
 	}
 	public function __destruct(){}
-	public $start_time;
-	public $end_time;
+	public static $start_time;
+	public static $end_time;
 	public $request_time;
 	const UNAUTHORIZED = '401: Unauthorized';
 	const NOTFOUND = '404: Not Found';
@@ -17,17 +17,12 @@ class FrontController extends Object{
 	public static $site_path;
 	public static $error_html;
 	public $delegate;
+
 	
 	public static function sendHeaders($headers){
 		foreach($headers as $key=>$value){
 			header(sprintf("%s: %s", $key, $value));
-		}
-	}
-	public static function sendRssHeaders(){
-		self::sendHeaders(array(
-			'Cache-Control'=>'no-cache, must-revalidate'
-			, 'Expires'=>'Mon, 04 Oct 2004 10:00:00 GMT'
-			, 'Content-type'=>'application/rss+xml;charset=UTF-8'));
+		}		
 	}
 	public static function sendXmlHeaders($type){
 		$headers = array(
@@ -128,7 +123,7 @@ class FrontController extends Object{
 		return file_exists(self::getDocumentRoot() . self::getVirtualPath() . '/.htaccess');
 	}
 	public static function index_script(){
-		return self::canRewriteUrl() ? null : 'index.php';
+		return self::canRewriteUrl() ? null : 'index.php/';
 	}
 	public static function urlFor($resource = null, $params = null, $make_secure = false){
 		$config = (class_exists('AppConfiguration') ? new AppConfiguration(null) : null);
@@ -165,7 +160,7 @@ class FrontController extends Object{
         
 		$url = '';
 		if(!$use_clean_urls){
-			$resource = self::index_script() . ($resource != null ? '/' . $resource : null);
+			$resource = self::index_script() . ($resource != null ? '' . $resource : null);
 		}else{
 	        $resource =  ($resource !== null ? $resource : null);
 		}
@@ -282,6 +277,20 @@ class FrontController extends Object{
 	public static function getDocumentRoot(){
 		return String::replace('/' . self::getVirtualPath() . '/', '', self::getAppPath());
 	}
+	public static function getEncoding(){
+		$encoding = $_SERVER["HTTP_ACCEPT_ENCODING"];
+		if(headers_sent()){
+			$encoding = null;
+		}else if(strpos($encoding, 'x-gzip') !== false){
+			$encoding = 'x-gzip';
+		}else if(strpos($encoding,'gzip') !== false){
+			$encoding = 'gzip';
+		}else{
+			$encoding = null; 
+		}
+		return $encoding;
+	}
+	
 	public static function getPathInfo(){
 		$argv = $_SERVER['argv'];
 		$php_self = '';
@@ -338,9 +347,7 @@ class FrontController extends Object{
 				$obj = new $class_name(array('url_parts'=>$url_parts));		
 				$obj->file_type = $file_type;
 				$method = strtolower((array_key_exists('_method', $_REQUEST) ? $_REQUEST['_method'] : $_SERVER['REQUEST_METHOD']));
-				if(!ob_start('ob_gzhandler')===false){
-					ob_start();
-				}
+				ob_start();
 				try{					
 					$output = Resource::sendMessage($obj, $method, $resource_id);
 				}catch(Exception $e){
@@ -367,10 +374,7 @@ class FrontController extends Object{
 			}
 			ob_end_flush();
 			$output = $this->trim($output);
-			$this->end_time = microtime(true);
-			if($obj->file_type === 'html'){
-				$output = String::replace('/<\/body>/i', '<p class="duration">Page rendered in ' . ($this->end_time - $this->start_time) . ' seconds</p></body>', $output);
-			}
+			self::$end_time = microtime(true);
 			self::sendHeadersForFileType($file_type, strlen($output));
 			return $output;
 		}else{

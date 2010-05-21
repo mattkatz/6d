@@ -41,8 +41,12 @@
 			<label for="profile[country]">Country:</label>
 			<input type="text" id="profile[country]" name="profile[country]" value="<?php echo $person->profile->country;?>" />
 		</p>
+		
+		<p>
+			<label for="profile[site_name]">Site Name:</label>
+			<input type="text" id="profile[site_name]" name="profile[site_name]" value="<?php echo $person->profile->site_name;?>" />
+		</p>
 
-	
 		<p>
 			<input type="submit" value="Save" name="save_button" />
 		</p>

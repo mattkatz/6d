@@ -10,11 +10,13 @@
 		<?php foreach($groups as $key=>$group):?>
 			<li rel="<?php echo $group->text;?>" class="<?php echo ($group->id == -1 ? 'selected' : '')?>">
 				<span><?php echo $group->text;?></span>
+				<input type="checkbox" id="group_<?php echo $key;?>" name="groups" value="<?php echo urlencode($group->text);?>" />
+				
 			<?php if(!in_array($group->text, array('All Contacts', 'Friend Requests'))):?>
 				<form action="<?php echo FrontController::urlFor('group');?>" method="post" class="delete">
 					<input type="hidden" value="<?php echo $group->text;?>" name="text" />
 					<input type="hidden" value="delete" name="_method" />
-					<button>delete</button>
+					<button><span>Delete</span></button>
 				</form>
 			<?php endif;?>
 			</li>

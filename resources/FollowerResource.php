@@ -28,36 +28,40 @@ class FollowerResource extends AppResource{
 		return $this->renderView('layouts/default', null);
 		
 	}
+	private function save($request){
+		$request = FriendRequest::findById($request->id);
+		$person = Person::findByUrl($request->url);
+		if($request !== null){
+			if($person === null){
+				$person = new Person(array('email'=>$request->getEmail()
+					, 'name'=>$request->getName()
+					, 'url'=>$request->getUrl()
+					, 'uid'=>uniqid()
+					, 'session_id'=>session_id()
+					, 'public_key'=>Random::getPassword()
+					, 'is_approved'=>true
+					, 'is_owner'=>false));
+			}else{
+				$person->public_key = Random::getPassword();
+				$person->is_approved = true;
+				$person->is_owner = false;
+			}
+			
+			$person = Person::save($person);
+			FriendRequest::delete($request);
+			$this->sendNotification($person);
+		}else{
+			if($person !== null){
+				$this->sendNotification($person);
+			}
+		}
+	}
+	
 	public function put(FriendRequest $request){		
 		if(!AuthController::isAuthorized()){
 			throw new Exception(FrontController::UNAUTHORIZED, 401);
 		}else{
-			$request = FriendRequest::findById($request->id);
-			$person = Person::findByUrl($request->url);
-			if($request !== null){
-				if($person === null){
-					$person = new Person(array('email'=>$request->getEmail()
-						, 'name'=>$request->getName()
-						, 'url'=>$request->getUrl()
-						, 'uid'=>uniqid()
-						, 'session_id'=>session_id()
-						, 'public_key'=>Random::getPassword()
-						, 'is_approved'=>true
-						, 'is_owner'=>false));
-				}else{
-					$person->public_key = Random::getPassword();
-					$person->is_approved = true;
-					$person->is_owner = false;
-				}
-				
-				$person = Person::save($person);
-				FriendRequest::delete($request);
-				$this->sendNotification($person);
-			}else{
-				if($person !== null){
-					$this->sendNotification($person);
-				}
-			}
+			$this->save($request);
 		}
 		$this->output = $this->renderView('follower/index');
 		return $this->renderView('layouts/default');
@@ -71,7 +75,7 @@ class FollowerResource extends AppResource{
 		UserResource::setUserMessage(sprintf("%s has been made a friend.%s", $request->getName(), $response));
 	}
 	// Some has sent a friend request.
-	public function post(Person $person){		
+	public function post(Person $person){	
 		$this->person = Person::findByUrl($person->url);
 		if($this->person === null){
 			$friend_request = FriendRequest::findByUrl($person->url);
@@ -89,9 +93,10 @@ class FollowerResource extends AppResource{
 		}else{
 			// Someone has sent another friend request, but is already a friend.
 			$friend_request = new FriendRequest(array('name'=>$this->person->name, 'email'=>$this->person->email, 'public_key'=>$this->person->public_key, 'created'=>date('c'), 'url'=>$this->person->url));
-			$this->put($friend_request);
+			$this->save($friend_request);
 		}
-		return 'ok';
+		$owner = Person::findOwner();
+		return "Thanks for the request. I'll make sure " . $owner->name . " gets it.";
 	}
 	public function delete(FriendRequest $request){
 		if(!AuthController::isAuthorized()){

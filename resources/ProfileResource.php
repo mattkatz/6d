@@ -74,7 +74,7 @@ class ProfileResource extends AppResource{
 			return str_replace('index.php', '', FrontController::urlFor(null)) . $person->profile->photo_url;
 		}
 	}
-	public function put(Person $person){
+	public function put(Person $person, Profile $profile){
 		if(!AuthController::isAuthorized()){
 			throw new Exception(FrontController::UNAUTHORIZED, 401);
 		}
@@ -91,9 +91,7 @@ class ProfileResource extends AppResource{
 		}else{
 			$person->setUid(uniqid());
 		}
-		if($person->profile != null){
-			$profile = new Profile(array('photo_url'=>$person->profile['photo_url'], 'address'=>$person->profile['address']
-				, 'city'=>$person->profile['city'], 'state'=>$person->profile['state'], 'zip'=>$person->profile['zip'], 'country'=>$person->profile['country']));
+		if($profile != null){
 			$person->setProfile(serialize($profile));
 		}
 		$person->url = String::replace('/http[s]?\:\/\//', '', FrontController::$site_path);
