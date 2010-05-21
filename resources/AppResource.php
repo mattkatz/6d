@@ -45,13 +45,8 @@
 					$owner = Person::findOwner();
 					$owner->profile = unserialize($owner->profile);
 					$this->title = $owner->profile->site_name;
-					
 				}catch(Exception $e){}
 			}
-			try{
-				$this->owner = Person::findOwner();
-				$this->owner->profile = unserialize($this->owner->profile);
-			}catch(Exception $e){}
 		}
 		
 		public function __destruct(){
