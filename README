@@ -1,1 +1,34 @@
-6d is a distributed social networking application. You can use it to create your own site on the web. It lets you share posts to people in your addressbook that have a 6d site.
+6d is a distributed social networking application. You can use it to create your own site on the web. It lets you share posts to people in your address book that have a 6d site.
+
+GET IT
+You can get the latest version on github (http://github.com/ijoey/6d). Either by downloading the source (as a zip or tar) or, if you have a github account, forking the project. If you need help, go to http://get6d.com to contact us.
+
+REQUIRED
+I haven't nailed down all the requirements yet. But you have to have PHP5+ and MySql 5+.
+
+INSTALL IT
+Put all the files in the 6d folder that you unarchived into the folder that you want to use for your site. Open your browser and go to your 6d site. For instance, I run 6d on my MacBook. The files are stored at "/Library/WebServer/Documents/6d". And I point my browser to http://localhost/6d to see the site. Upon first visiting your 6d site, you should see the installation page that has a link telling you to Create a Configuration File. Click that link. Here's  list of the pages that'll you see next:
+
+A. Database settings
+	User name: this is the MySql database server user name, the one that 6d will use to connect to your database server.
+	Password: this is the MySql database server account password.
+	Host: this is your MySql database server host. On my MacBook it's "localhost" but if you're installing it on a hosting provider like site5.com or dreamhost.com, you'll have to check your account for your database server name or ip address.
+	Database name: You have to create a MySql database and enter the name that you create here.
+	Table prefix: This is what 6d will prefix the table names that it creates in your database. I'd leave it as the default unless you know what you're doing and want to change it.
+	Theme: This is the name of the theme that 6d will use to display your site. I'd leave it set to default.
+	Admin Email: This is your email address, the one you want to use to login to your site.
+	Site Password: This is the password that you want to use to login to your site.
+	
+When you submit the form, you should be good to go. You should see a "login" link on the next page where you can click on that and login to your site to create a new post.
+
+WHAT NOW?
+6d is a work in progress. We don't have the kinks worked out and are continually adding features and changing the user interface according to the feedback we get from the people using it. But here's a few things that you can do next:
+
+1. You can create a post that will show up on your web site, just like a blog. The default configuration for the public facing side of a 6d site is a blog. You create posts and make them public and they'll show up on your public facing site. You can take a look at http://www.erikbigelow.com and http://www.joeyguerra.com to get an idea.
+
+2. You can broadcast your post to other people who have 6d sites. There is currently no way to "discover" other 6d sites. We'll be working on that soon. But if you have friends who you can get a 6d site up and running for, then you can add their 6d site to your address book.
+ 	The address book is the heart of 6d. It's where you store your contacts, make friend requests, and approve friend requests. When you're logged in, you should see a link that says "Addressbook". Clicking on that will take you to the address book so you can start adding people.
+	The address book user interface is divided into 3 columns, Groups, Contacts and the detail area. In Groups, you should see All Contacts and Friend Requests. Clicking on All Contacts will show all your contacts in the Contacts section. Clicking on Friend Requests will you show you all the requests that people have sent to you. The Friend Requests are the ones you have to either confirm or delete to allow them to send you posts and you to send them posts. You can send them posts by creating a new post and clicking on the Address Book link at the top. Then selecting the Groups and/or people you want to send the post to. You'll see them show up in the "To" field on the post (just like an email message).
+
+
+
