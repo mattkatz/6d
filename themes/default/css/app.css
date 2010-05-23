@@ -1,0 +1,38 @@
+#content{
+	margin: 0 auto;
+	width: 100%;
+	text-align: left;
+}
+#banner, #content, #footer{
+}
+#content{
+	border-radius: 10px 10px;
+	-webkit-border-radius: 10px 10px;
+	-moz-border-radius: 10px 10px;
+	margin: 60px auto;
+	background: rgb(250,250,250);
+}
+
+article{
+	border-radius: 10px 10px;
+	-webkit-border-radius: 10px 10px;
+	-moz-border-radius: 10px 10px;
+	background: rgb(255,255,255);
+	padding: 30px;
+	margin: 0 auto 60px auto;
+	position: relative;
+}
+
+article h1{
+	margin-bottom: 30px;
+}
+article section.entry-content p{
+	line-height: 23px;
+}
+article footer.post-info{
+	position: absolute;
+	bottom: 5px;
+	right: 15px;
+	opacity: .5;
+	filter: alpha(opacity=50);
+}

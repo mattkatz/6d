@@ -1,14 +1,40 @@
+input[type="text"], textarea, select{
+	font-size: 100%;
+	width: 155px;
+}
+ul{
+	list-style-position: inside;
+}
+li{
+	cursor: default;
+}
+
+#addressbook{
+	background: rgb(255,255,255);
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin: 0 auto;
+	padding: 10px;
+}
+#addressbook h1{
+	font-size: 11px;
+	width: 100%;
+	background: rgba(0,0,0,.1);
+	text-align: center;
+}
 #people input[type="checkbox"]{
 	display: none;
 }
 form.delete{
-	float: right;
+display: none;
 }
-form.delete button{
-	background: none;
-	cursor: default;
-	padding: 0;
-	margin: 0;
+#groups input[type="checkbox"]{
+	display: none;
+}
+#groups, #people{
+	background: rgba(0,0,0, .2);
+	border-right: solid 1px rgb(200, 200, 200);
 }
 #groups{
 	width: 180px;
@@ -29,17 +55,23 @@ input{
 	-webkit-box-shadow: 0 0 3px #333;
 	-moz-box-shadow: 0 0 3px #333;
 }
-#people footer{
-	position: absolute;
-}
-ul{
-	list-style-type: decimal;
-}
-li{
-	cursor: default;
-}
 #detail{
 	margin-left: 390px;
+}
+#detail input[type="text"]{
+	width: 220px;
+}
+#detail fieldset p{
+	height: 27px;
+}
+#detail fieldset p label{
+	display: block;
+	float: left;
+	width: 75px;
+	text-align: right;
+	margin-right: 5px;
+	opacity: .5;
+	filter: alpha(opacity=50);
 }
 li.selected, li.selected a{
 	background: blue;
@@ -47,4 +79,11 @@ li.selected, li.selected a{
 }
 li.selected button{
 	color: #fff;
+}
+li.inactive{
+	opacity: .3;
+	filter: alpha(opacity=30);
+}
+li.hot{
+	background: lightBlue;
 }

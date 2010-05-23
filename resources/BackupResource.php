@@ -35,12 +35,9 @@ class BackupResource extends AppResource{
 		$this->posts = unserialize($text);
 		foreach($this->posts as $post){
 			$post->id = null;
-			// TODO: Need to take this out.
-			$post->created = $post->date;
-			if($post->created === null){
+			if(strlen($post->created) === 0){
 				$post->created = date('c');
 			}
-			$post->post_date = $post->date;
 			list($post, $errors) = Post::save($post);
 		}
 		$this->output = $this->renderView('post/index', null);

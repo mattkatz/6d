@@ -10,10 +10,10 @@
 		<?php switch($post->type){
 			case('link'):?>
 		<header class="<?php echo !$post->is_published ? 'private' : null;?>">
-			<?php echo $post->body;?>
+			<a href="<?php echo $post->body;?>" title="<?php echo $post->title;?>"><?php echo $post->title;?></a>
 		</header>
 		<section class="entry-content">
-			<p><?php echo $post->title;?></p>
+			<p><?php echo $post->description;?></p>
 		<?php if( AuthController::isAuthorized()):?>
 			<form action="<?php echo FrontController::urlFor('post');?>" method="post" onsubmit="return confirm('Are you sure you want to delete <?php echo $post->title;?>?');">
 				<input type="hidden" name="id" value="<?php echo $post->id;?>" />
@@ -57,7 +57,7 @@
 	</article>
 	<?php endforeach;?>
 <?php endif;?>
-	<nav class="pages">
+	<nav class="pager">
 	<?php if(count($posts) > 0 && $page > 1):?>
 		<a href="<?php echo FrontController::urlFor(($name === 'index' ? null : $name . '/')) . ($page > 1 ? $page-1 : null);?>" title="View newer posts"> ← newer</a>
 	<?php else:?>

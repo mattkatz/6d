@@ -22,24 +22,18 @@
 			<ul></ul>
 		</section>
 		<section>
-			<label for="title">
-<?php if($post->id > 0):?>
-				Edit this Post:
-<?php else:?>
-				Create a New Post:
-<?php endif;?>
-			</label>
+			<label for="title">Title:</label>
 			<input type="text" id="title" name="title" value="{$post->title}" />
 			<input type="checkbox" style="width:14px;display: none;" id="is_published" name="is_published" value="true"<?php echo $post->is_published ? ' checked="true"' : '';?> />
 			
 			<input type="checkbox" style="width:14px;display: none;" value="true" id="make_home_page" name="make_home_page"<?php echo $post->isHomePage($this->getHome_page_post_id()) ? ' checked="true"' : null;?> />
 		</section>
 		<section>
-			<label for="tags" class="inline">Tags:</label>
+			<label for="tags" class="inline">Tags (separated by commas):</label>
 			<input type="text" name="tags" id="tags" value="{$post->tags}" />
 		</section>		
 		<section class="type">
-			<label for="type">Type (separated by commas):</label>
+			<label for="type">Type:</label>
 			<select id="type" name="type">
 <?php foreach(array('post'=>'Post', 'page'=>'Page', 'quote'=>'Quote', 'photo'=>'Photo', 'album'=>'Album', 'video'=>'Video', 'link'=>'Link') as $key=>$value):?>
 			<option value="<?php echo $key;?>"<?php echo $post->type === $key ? ' selected="true"' : '';?>><?php echo $value;?></option>
@@ -56,6 +50,10 @@
 			<label for="body">Post:</label>
 			<textarea name="body" id="body" cols="50" rows="20">{$post->body}</textarea>
 		</article>
+		<section>
+			<label for="post_date">Post Date:</label>
+			<input type="text" name="post_date" value="{$post->post_date}" id="post_date" />
+		</section>
 		<input type="hidden" name="id" value="{$post->id}" />
 		<input type="hidden" name="source" value="{$post->source}" />
 	</fieldset>

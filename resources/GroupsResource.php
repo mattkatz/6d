@@ -14,12 +14,14 @@ class GroupsResource extends AppResource{
 		parent::__destruct();
 	}
 	public $groups;
+	public $group;
 	public function delete($groups = null, $ids = null, Tag $group = null){
 		if($groups !== null){
+			$this->groups = $groups;
 			Tag::delete_many('group', $groups);
 		}elseif($ids !== null && $group !== null){
-			$this->groups = Tag::findTagsByTextAndParents($group->text, $ids);
-			Tag::delete_many('group', $this->groups);
+			$this->group = $group;
+			Tag::delete_many_with_parent_ids('group', $ids);
 		}
 		$all_contacts = new Tag(array('id'=>-1, 'type'=>'group', 'text'=>'All Contacts'));
 		$this->groups = Tag::findAllTagsForGroups();

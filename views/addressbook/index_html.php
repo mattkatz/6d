@@ -40,3 +40,9 @@
 	<section id="detail" class="detail"></section>
 	<div style="clear: both;"></div>
 </div>
+<section id="instructions">
+	<ul>
+		<li>You can delete a group or contact by selecting it and pressing the delete key</li>
+		<li>Add a group or contact by clicking on the plus (+) sign under the respective section, filling out a name in the new field and pressing the "enter" or "return" key.
+	</ul>
+</section>

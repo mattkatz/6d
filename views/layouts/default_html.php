@@ -10,8 +10,8 @@
 		<meta name="description" content="{$description}"/>
 		<meta name="keywords" content="{$keywords}"/>
 		<meta name="viewport" content="width=980"/>
-	  	<link rel="stylesheet" type="text/css" href="<?php echo FrontController::urlFor('themes');?>css/default.css" media="screen" />
-	
+  		<link rel="stylesheet" type="text/css" href="<?php echo FrontController::urlFor('themes');?>css/reset.css" media="screen" />
+	  	<link rel="stylesheet" type="text/css" href="<?php echo FrontController::urlFor('themes');?>css/default.css" media="screen" />	
 		<link rel="stylesheet" type="text/css" media="screen" href="<?php echo FrontController::urlFor('js');?>MooEditable/MooEditable.css">
 		{$resource_css}
 		<script type="text/javascript" charset="utf-8" src="<?php echo FrontController::urlFor('js');?>mootools-core.js"></script>
@@ -25,36 +25,37 @@
 		{$resource_js}
 	</head>
 	<body>
-		<header id="banner">
-			<h1><a href="<?php echo FrontController::urlFor(null);?>" title="Home"><span>6d</span></a></h1>
-			<nav>
-				<ul>				
-<?php $pages = Post::findPublishedPages();?>
-<?php while($pages != null && $page = array_shift($pages)):?>
-	<?php if(!$page->isHomePage($this->getHome_page_post_id())):?>
-					<li><a href="<?php echo FrontController::urlFor($page->custom_url);?>" title="<?php echo $page->description;?>"><?php echo $page->title;?></a></li>
-	<?php endif;?>
-<?php endwhile;?>
-				</ul>
-			</nav>
+		<div class="frame">
+			<header id="banner">
+				<h1><a href="<?php echo FrontController::urlFor(null);?>" title="Home"><span><?php echo $this->owner->profile->site_name;?></span></a></h1>
+				<nav>
+					<ul>
+	<?php $pages = Post::findPublishedPages();?>
+	<?php while($pages != null && $page = array_shift($pages)):?>
+		<?php if(!$page->isHomePage($this->getHome_page_post_id())):?>
+						<li><a href="<?php echo FrontController::urlFor($page->custom_url);?>" title="<?php echo $page->description;?>"><?php echo $page->title;?></a></li>
+		<?php endif;?>
+	<?php endwhile;?>
+					</ul>
+				</nav>
 
-		</header>
-		<aside id="author">
-			<?php $person = Person::findOwner();$person->profile = unserialize($person->profile);?>
-			<a href="<?php echo FrontController::urlFor(null);?>" title="Go back to my home page">
-				<img src="<?php echo ProfileResource::getPhotoUrl($person);?>" alt="photo of <?php echo $person->name;?>" class="author" />
-			</a>
-		  	<footer id="tweets"></footer>
-		</aside>
-		<section id="content">
-			<div class="user_message"<?php echo (Resource::getUserMessage()==null ? 'style="display:none;"' : null);?>>
-				<?php echo Resource::getUserMessage();?>
-			</div>
-			{$output}
-		</section>
-		<div style="clear: both;"></div>
-		<?php require('menu.php');?>
-		<?php require('footer.php');?>
+			</header>
+			<aside id="author">
+				<?php $person = Person::findOwner();$person->profile = unserialize($person->profile);?>
+				<a href="<?php echo FrontController::urlFor(null);?>" title="Go back to my home page">
+					<img src="<?php echo ProfileResource::getPhotoUrl($person);?>" alt="photo of <?php echo $person->name;?>" class="author" />
+				</a>
+			  	<footer id="tweets"></footer>
+			</aside>
+			<section id="content">
+				<div class="user_message"<?php echo (Resource::getUserMessage()==null ? 'style="display:none;"' : null);?>>
+					<?php echo Resource::getUserMessage();?>
+				</div>
+				{$output}
+			</section>
+			<?php require('menu.php');?>
+			<?php require('footer.php');?>
+		</div>
 		<noscript>requires Javascript. Please either turn on Javascript or get a browser that supports Javascript to use 6d.</noscript>
 	</body>
 </html>

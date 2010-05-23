@@ -105,9 +105,9 @@
 		public static function findTagsByTextAndParents($text, $ids){
 			$ids = array_map('intval', $ids);
 			$clause = new ByClause(sprintf("text='%s' and parent_id in (%s)", $text, implode(',', $ids)), null, 0, null);
-			$config = new AppConfiguration();				
+			$config = new AppConfiguration();
 			$db = Factory::get($config->db_type, $config);
-			$list = $db->find(new ByClause($clause, null, 0, null), new Tag());
+			$list = $db->find($clause, new Tag());
 			return $list;
 		}
 		
@@ -169,6 +169,15 @@
 			}
 
 			return $errors;
+		}
+		public static function delete_many_with_parent_ids($type, $parent_ids){
+			$config = new AppConfiguration();
+			$db = Factory::get($config->db_type, $config);
+			if($type !== null && count($parent_ids) > 0){
+				$text = array_map(array('Tag', 'stringify'), $tags);
+				$clause = new ByClause(sprintf("type='%s' and parent_id in (%s)", $type, implode(',', $parent_ids)), null, 0, array('text'=>'asc'));
+				return $db->delete($clause, new Tag(null));
+			}
 		}
 		public static function delete_many($type, $tags){
 			$config = new AppConfiguration();

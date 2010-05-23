@@ -1,116 +1,81 @@
-#post_form{
-	position: relative;
-}
-#post_menu{
-	border-bottom: solid 1px rgb(240,240,240);
-	background: rgb(220,220,220);
-	height: 3em;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;	
+#post_menu{height: 40px;}
+#post_menu ul li{
+	float: left;
 }
 #post_menu ul{
-	list-style: none;
-	list-style-position: inside;
-	margin: 0;
-	padding: 0;
-	height: 100%;
-}
-#post_menu ul li{
-	display: block;
-	float: left;
-	height: 100%;
-	line-height: 100%;
+	height: 25px;
 }
 #post_menu ul li a{
-	display: inline-block;
-	padding: 1em;
-}
-#options{
-	position: relative;
-}
-#options .window_button{
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-#options section label{
-	display: inline-block;
-	width: 70px;
-}
-
-#options section input, #options section textarea{
-	width: 50em;
-}
-
-#addressbook{
-	width: 400px;
-	background: #fff;
-	height: 300px;
-	padding: 1em;
-	box-shadow: 0 0 5px #000;
-	-webkit-box-shadow: 0 0 5px #000;
-}
-#addressbook section{
-	float: left;
-	width: 50%;
-}
-#addressbook button{
-	position: absolute;
-	bottom: 0;
-	right: 0;
-	width: 75px;
-}
-#addressbook button[value=Cancel]{
-	right: 80px;
-}
-
-#addressbook section ul{
-	list-style: none;
-	list-style-position: inside;
-}
-#addressbook section ul li{
-	position: relative;
-	line-height: 1.5em;
-}
-#addressbook section ul li:nth-child(odd){
-	background-color: rgb(240, 244, 247);
-}
-#addressbook section ul li.selected{
-	background: rgb(119, 141, 168);
-	color: #fff;
-}
-#addressbook section ul li input{
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-#addressbook section ul li span{
-	cursor: default;
 	display: block;
+	padding: 3px 5px 3px 5px;
+}
+#post_form section{
+	margin: 0 0 5px 0;
+	clear: both;
+}
+#post_form section label{
+	display: block;
+	line-height: 25px;
+}
+input, textarea, select{
+	font-size: 21px;
 	width: 100%;
-	height: 100%;
-	margin-left: 20px;
 }
-#options #friends ul{
-	height: 3em;
-	margin: -1em 0 0 6em;
-	list-style: none;
-	list-style-position: inside;
+#post_form input{
+	padding: 0;
+	margin: 0;
 }
-#options #friends ul li{
-	margin-left: .5em;
-	padding: 0 1em 0 1em;
+#post_form{
+	background: rgb(255,255,255);
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin: 0 auto;
+	padding: 10px;
+}
+#post_form textarea{
+	width: 100%;
+}
+fieldset{
+	margin-bottom: 20px;
+	background: rgba(0,0,0, .2);
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin: 0 auto 20px auto;
+	padding: 10px;
+}
+#post_form nav{
+	width: 100%;
+	margin-top: 30px;
+	border-top: solid 1px rgb(200,200,200);
+	height: 50px;
+}
+#post_form nav button{
+	float: right;
+	margin-top: 20px;
+}
+#post_form nav button:active{
+	background: rgba(100,100,100,1);
+}
+#addressbook input{
+	width: 20px;
+	float: right;
+}
+#send_to_list label{
 	float: left;
+	margin-right: 10px;
+}
+#send_to_list li{
+	float: left;
+	margin-right: 5px;
+}
+#send_to_list li span{
+	background: rgba(200,200,200,.5);
+	border: none;
 	border-radius: 20px;
 	-webkit-border-radius: 20px;
-	-moz-border-radius: 20px;
-	background: #ccc;
-	color: #333;
-}
-#people ul li a{
-	padding: 0;
-}
-#people ul li form{
-	display: none;
+	-moz-border-radius: 10px;
+	display: block;
+	padding: 3px 5px 3px 5px;
 }

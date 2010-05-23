@@ -13,7 +13,6 @@
 			$resource_name = strtolower(str_replace('Resource', '', get_class($this)));				
 			$this->resource_css = $resource_name . '.css';
 			$this->resource_js = $resource_name . '.js';
-			
 			$root = str_replace('resources', '', dirname(__FILE__));
 			if(file_exists($root . FrontController::themePath() . '/js/' . $this->resource_js)){
 				$this->resource_js = FrontController::urlFor('themes') . 'js/' . $this->resource_js;
@@ -42,9 +41,9 @@
 				$this->config = new AppConfiguration();
 				try{
 					$this->settings = Setting::findAll();
-					$owner = Person::findOwner();
-					$owner->profile = unserialize($owner->profile);
-					$this->title = $owner->profile->site_name;
+					$this->owner = Person::findOwner();
+					$this->owner->profile = unserialize($this->owner->profile);
+					$this->title = $this->owner->profile->site_name;
 				}catch(Exception $e){}
 			}
 		}
