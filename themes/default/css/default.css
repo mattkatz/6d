@@ -139,4 +139,49 @@ button{
 	-moz-border-radius: 5px;
 	color: rgb(0,0,0);
 }
+/* MODAL
+______________________*/
 
+/* ADDRESSBOOK MODAL
+______________________*/
+.modal section{
+	float: left;
+	width: 200px;
+	height: 260px;
+	font-size: 13px;
+	color: black;
+	text-shadow: none;
+}
+
+.modal ul li{
+	line-height: 21px;
+	cursor: default;
+	display: block;
+	width: 100%;
+}
+.modal ul li:nth-child(even){
+	background-color: rgb(240, 244, 247);
+}
+.modal section#detail
+, .modal footer{
+	display: none;
+}
+.modal h1{
+	line-height: 17px;
+	width: 100%;
+	background: rgb(240,240,240);
+	color: rgb(102, 102, 102);
+	font-size: 11px;
+	font-weight: bold;
+	text-shadow: none;
+}
+
+.modal form.delete{
+	display: none;
+}
+.modal input{
+	left: 180px;
+}
+.modal li.selected, .modal li.selected:nth-child(even){
+	background: rgb(135,200,245);
+}

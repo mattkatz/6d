@@ -74,7 +74,7 @@ UIView.Modal = function(id, options){
 	this.overlay = new UIView.Overlay(null);
 	this.onHandleClick = function(e){
 		this.overlay.toggle();
-		SDDom.setStyles({zIndex: 2, position: 'absolute', top: '50%', left: '50%', marginLeft: -1*SDDom.getWidth(this.container) / 2, marginTop: -1*SDDom.getHeight(this.container)/2}, this.container);
+		SDDom.setStyles({zIndex: 2, position: 'absolute', top: '20%', left: '50%', marginLeft: -1*SDDom.getWidth(this.container) / 2, marginTop: -1*SDDom.getHeight(this.container)/2}, this.container);
 		this.toggle();
 		if(this.didClickHandle){
 			this.didClickHandle(e);
@@ -211,8 +211,7 @@ UIView.Modal.AddressBook = function(id, options){
 		if(e.target && e.target.getAttribute){
 			var section = SDDom.getParent('section', e.target);
 			var nodeName = e.target.nodeName.toLowerCase();
-			var target = (nodeName !== 'input' ? SDDom.getParent('li', e.target) : e.target);
-			
+			var target = (nodeName !== 'input' && nodeName !== 'li' ? SDDom.getParent('li', e.target) : e.target);
 			var rel = (nodeName === 'input' ? target.value : target.getAttribute('rel'));
 			if(nodeName === 'input'){
 				if(target === SDDom.findFirst('input', this.div)){

@@ -170,18 +170,20 @@ SDDom.keys = {
 };
 SDDom.observers = [];
 SDDom.remove = function(elem){
-	if(elem.item){
-		if(elem.length > 0){
-			var e = elem.item(0);
-			var parent = e.parentNode;
-			do{
-				parent.removeChild(e);
-			}while(e = elem.item(elem.length));
-		}
-		
-	}else{
-		if(elem && elem.parentNode){
-			elem.parentNode.removeChild(elem);
+	if(elem){
+		if(elem.item){
+			if(elem.length > 0){
+				var e = elem.item(0);
+				var parent = e.parentNode;
+				do{
+					parent.removeChild(e);
+				}while(e = elem.item(elem.length));
+			}
+
+		}else{
+			if(elem && elem.parentNode){
+				elem.parentNode.removeChild(elem);
+			}
 		}
 	}
 	return elem;

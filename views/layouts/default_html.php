@@ -12,12 +12,8 @@
 		<meta name="viewport" content="width=980"/>
   		<link rel="stylesheet" type="text/css" href="<?php echo FrontController::urlFor('themes');?>css/reset.css" media="screen" />
 	  	<link rel="stylesheet" type="text/css" href="<?php echo FrontController::urlFor('themes');?>css/default.css" media="screen" />	
-		<link rel="stylesheet" type="text/css" media="screen" href="<?php echo FrontController::urlFor('js');?>MooEditable/MooEditable.css">
 		{$resource_css}
-		<script type="text/javascript" charset="utf-8" src="<?php echo FrontController::urlFor('js');?>mootools-core.js"></script>
-		<script type="text/javascript" charset="utf-8" src="<?php echo FrontController::urlFor('js');?>mootools-more.js"></script>
 		<script type="text/javascript" charset="utf-8" src="<?php echo FrontController::urlFor('js');?>NotificationCenter.js"></script>
-		<script type="text/javascript" charset="utf-8" src="<?php echo FrontController::urlFor('js');?>MooEditable/MooEditable.js"></script>
 		<script type="text/javascript" charset="utf-8" src="<?php echo FrontController::urlFor('js');?>default.js" id="default_script" rel="<?php echo urlencode(FrontController::urlFor(null));?>"></script>
 		<!--[if IE]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -45,7 +41,13 @@
 				<a href="<?php echo FrontController::urlFor(null);?>" title="Go back to my home page">
 					<img src="<?php echo ProfileResource::getPhotoUrl($person);?>" alt="photo of <?php echo $person->name;?>" class="author" />
 				</a>
-			  	<footer id="tweets"></footer>
+			  	<footer id="tweets">
+					<nav>
+						<?php if(!AuthController::isAuthorized()):?>
+						<a href="<?php echo FrontController::urlFor('login');?>" title="Login">Login</a>
+						<?php endif;?>
+					</nav>
+				</footer>
 			</aside>
 			<section id="content">
 				<div class="user_message"<?php echo (Resource::getUserMessage()==null ? 'style="display:none;"' : null);?>>

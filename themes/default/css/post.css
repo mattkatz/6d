@@ -58,9 +58,13 @@ fieldset{
 #post_form nav button:active{
 	background: rgba(100,100,100,1);
 }
+
 #addressbook input{
 	width: 20px;
 	float: right;
+}
+#instructions{
+	display: none;
 }
 #send_to_list label{
 	float: left;
