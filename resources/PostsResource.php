@@ -16,10 +16,14 @@ class PostsResource extends AppResource{
 		if(!AuthController::isAuthorized()){
 			throw new Exception(FrontController::UNAUTHORIZED, 401);
 		}
+		$tag = null;	
 		$this->limit = 5;
 		array_shift($this->url_parts);
 		if(count($this->url_parts) > 0){
-			$this->page = (int)array_shift($this->url_parts);
+			$this->page = intval($this->url_parts[0]);
+			if($this->page === 0){
+				$tag = array_shift($this->url_parts);
+			}
 		}
 		if($this->page <= 0){
 			$this->page = 1;
@@ -28,47 +32,50 @@ class PostsResource extends AppResource{
 
 		$this->sort_by = 'id';
 		$this->sort_by_direction = 'desc';
-		$tag = null;
-		if(count($this->url_parts) > 0){
-			$tag = array_shift($this->url_parts);
-			switch($tag){
-				case('author'):
-					$author_id = $this->url_parts[2];
-					$person = new Person(array('id'=>$author_id));
-					if($person->id > 0){
-						$person = Person::findById($person->id);
-						if($person !== null){
-							if($person->is_owner){
-								$person->url = null;
-							}
-							$this->posts = Post::findByPerson($person, $start, $this->limit, $this->sort_by, $this->sort_by_direction);
-							$this->title = "All Posts by " . $person->name;
-						}
-					}
-					break;
-				default:
-					if(count($this->url_parts) > 0){
-						$this->page = array_shift($this->url_parts);
-					}else{
-						$this->page = 1;
-					}
-					$this->initializePosts($tag, $start, $this->limit, $this->sort_by, $this->sort_by_direction);
-					$this->title = 'All Posts';
-					break;
-			}
+		if($tag === 'author'){
+			$author_id = array_shift($this->url_parts);
+			$this->posts = $this->getPostsByAuthor($author_id);
+		}else if($tag !== null){
+			$this->title = 'All Posts Tagged ' . $tag->text;
+			$this->posts = $this->getPostsByTag($tag);
 		}else{
-			if($tag !== null){
-				$this->title = 'All Posts Tagged ' . $tag->text;
-				$this->posts = Post::findByTag($tag, $start, $this->limit, $this->sort_by, $this->sort_by_direction);
-			}else{
-				$this->title = 'All Posts';
-				$this->posts = Post::find($start, $this->limit, $this->sort_by, $this->sort_by_direction);			
-			}
-			
+			$this->title = 'All Posts';
+			$this->posts = $this->getAllPosts($start, $this->limit, $this->sort_by, $this->sort_by_direction);
+		}
+		if(count($this->posts) === 0){
+			self::setUserMessage('There are no more posts to show for that request.');
+			$this->redirectTo('posts');
 		}
 		$this->output = $this->renderView('post/index');
+		$this->keywords = implode(', ', String::getKeyWordsFromContent($this->output));
+		if($this->post !== null){
+			$this->description = $this->post->title;
+		}else{
+			foreach($this->posts as $post){
+				$this->description .= $post->title . ',';
+			}
+		}
+		
 		return $this->renderView('layouts/default');
 	}
-	private function initializePosts($tag = null, $start = 0, $limit = 4, $sort_by = 'post_date', $sort_by_direction = 'desc'){
+	private function getAllPosts($start, $limit, $sort_by, $sort_by_direction){
+		return Post::find($start, $this->limit, $this->sort_by, $this->sort_by_direction);			
+	}
+	private function getPostsByTag($tag){
+		return Post::findByTag($tag, $start, $this->limit, $this->sort_by, $this->sort_by_direction);
+	}
+	private function getPostsByAuthor($author){
+		$person = new Person(array('id'=>$author_id));
+		if($person->id > 0){
+			$person = Person::findById($person->id);
+			if($person !== null){
+				if($person->is_owner){
+					$person->url = null;
+				}
+				$posts = Post::findByPerson($person, $start, $this->limit, $this->sort_by, $this->sort_by_direction);
+				$this->title = "All Posts by " . $person->name;
+			}
+		}
+		return $posts;
 	}
 }
