@@ -395,10 +395,14 @@ UIController.AddressBook = function(views){
 
 		SDDom.stop(e);
 	};
-	this.onFollowWasSubmittedDONE = function(request){
-		var user_message = $$('.user_message')[0];
-		user_message.set('text', JSON.parse(text).message);
-		user_message.show();
+	this.onFollowWasSubmittedDONE = function(request){		
+		var user_message = SDDom.findFirst('.user_message');
+		user_message.innerHTML = JSON.parse(request.responseText, false).user_message;
+		SDDom.show(user_message);
+		this.reset();
+	};
+	this.reset = function(){
+		
 	};
 	this.followFormDidSubmit = function(e){
 		(new SDAjax({method: e.target.method

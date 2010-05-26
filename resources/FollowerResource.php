@@ -72,7 +72,7 @@ class FollowerResource extends AppResource{
 		$site_path = String::replace('/\/$/', '', $site_path);
 		$data = sprintf("_method=put&email=%s&url=%s&public_key=%s", urlencode($config->email), urlencode($site_path), urlencode($person->public_key));
 		$response = NotificationResource::sendNotification($person, 'followers', $data, 'post');
-		UserResource::setUserMessage(sprintf("%s has been made a friend.%s", $request->getName(), $response));
+		UserResource::setUserMessage(sprintf("%s has been made a friend.%s", $person->getName(), $response));
 	}
 	// Some has sent a friend request.
 	public function post(Person $person){	
