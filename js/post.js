@@ -30,7 +30,8 @@ UIView.TextArea = function(id){
 		SDDom.setStyles({height: (height - 30 ) + 'px'}, SDDom.byTag('iframe', this.container));
 	};
 	this.keypress = function(e){
-		if((e.metaKey || e.ctrlKey) && String.fromCharCode(e.keyCode) === 's'){
+		console.log(e);
+		if((e.metaKey || e.ctrlKey) && String.fromCharCode(e.charCode || e.keyCode) === 's'){
 			SDDom.stop(e);
 			if(this.delegate && this.delegate.doSave){
 				this.delegate.doSave.apply(this.delegate, [this, e]);
