@@ -129,8 +129,10 @@ class FrontController extends Object{
 		$config = (class_exists('AppConfiguration') ? new AppConfiguration(null) : null);
 		$path = null;
 		if(stripos($resource, '/') !== false){
-			$resource = explode('/', $resource);
-			$resource = $resource[0];
+			$path = explode('/', $resource);
+			$resource = $path[0];
+			array_shift($path);
+			$path = implode('/', $path);
 		}
         $use_clean_urls = self::canRewriteUrl();
         $query_string = null;
@@ -172,7 +174,9 @@ class FrontController extends Object{
 		if($resource_id !== null){
 			$resource .= '/' . $resource_id;
 		}
-//		$resource .= $path;
+		if($path !== null){
+			$resource .= '/' . $path;
+		}
         if($query_string != null){
 			$resource .= '?';
             $resource .= implode('&', $query_string);
