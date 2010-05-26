@@ -9,7 +9,10 @@ function SDObject(options){
 				args.push(window.event);
 			}
 			if(arguments && arguments.length > 0){
-				args.concat(arguments);
+				var i = arguments.length;
+				while(arg = arguments[--i]){
+					args.push(arg);
+				}
 			}
 			return fn.apply(me, args);
 		}
@@ -258,7 +261,12 @@ SDDom.getParent = function(tag, elem){
 	
 };
 SDDom.stop = function(e){
-	e.cancelBubble = true;
+	if(e.cancelBubble){
+		e.cancelBubble = true;
+	}else{
+		e.preventDefault();
+		e.stopPropagation();
+	}
 	e.returnValue = false;
 };
 SDDom.removeClass = function(class_name, elem){
@@ -612,13 +620,13 @@ UIView.ContactPanel = function(id){
 	UIView.Panel.apply(this, arguments);
 	this.onClick = function(e){
 		alert(e);
-		SDDom.stopPropagation(e);
+		SDDom.stop(e);
 	}
 }
 
 UIView.ContactLink = function(id){
 	this.onClick = function(e){
-		SDDom.stopPropagation(e);
+		SDDom.stop(e);
 	};
 	UIView.Button.apply(this, arguments);
 }
@@ -626,7 +634,7 @@ UIView.ContactLink = function(id){
 UIView.AdminMenu = function(id){
 	this.onClick = function(e){
 		if(e.target.id === 'new_post_link'){
-			SDDom.stopPropagation(e);
+			SDDom.stop(e);
 			this.open(e.target, 'admin_menu');
 		}
 	};
