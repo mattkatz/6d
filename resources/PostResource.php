@@ -23,8 +23,9 @@ class PostResource extends AppResource{
 	public $page;
 	public $photos;
 	public $people;
-	
-	public function get(Post $post = null, $layout = 'default'){
+	public $last_page_viewed;
+	public function get(Post $post = null, $layout = 'default', $last_page_viewed = 1){
+		$this->last_page_viewed = $last_page_viewed;
 		$photo = new Photo();
 		$this->photos = $photo->findAll();
 		$view = 'post/show';
@@ -73,10 +74,11 @@ class PostResource extends AppResource{
 		$url = ($url === null ? 'images/nophoto.png' : $url);
 		return $url;		
 	}
-	public function put(Post $post, $people = array(), $groups = array(), $make_home_page = false, $public_key = null, $photo_names = array()){
+	public function put(Post $post, $people = array(), $groups = array(), $make_home_page = false, $public_key = null, $photo_names = array(), $last_page_viewed = 1){
 		if(!AuthController::isAuthorized()){
 			throw new Exception(FrontController::UNAUTHORIZED, 401);
 		}else{
+			$this->last_page_viewed = $last_page_viewed;
 			if($post->id !== null && strlen($post->id) > 0){
 				$this->post = Post::findById($post->id);
 			}
@@ -118,7 +120,7 @@ class PostResource extends AppResource{
 			}else{
 				self::setUserMessage("That post doesn't exist.");
 			}
-			$this->redirectTo('posts');
+			$this->redirectTo('posts/' . $this->last_page_viewed);
 		}		
 	}
 	public function post(Post $post, $people = array(), $groups = array(), $make_home_page = false, $public_key = null, $photo_names = array()){

@@ -58,6 +58,7 @@
 		<input type="hidden" name="source" value="{$post->source}" />
 	</fieldset>
 	<nav>
+		<input type="hidden" name="last_page_viewed" value="{$last_page_viewed}" />
 <?php if($post->id !== null):?>
 		<input type="hidden" value="put" name="_method" />
 <?php endif;?>

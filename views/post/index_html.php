@@ -23,7 +23,7 @@
 				<input type="hidden" name="id" value="<?php echo $post->id;?>" />
 				<input type="hidden" name="_method" value="delete" />
 				<input type="submit" name="delete_button" value="delete post" />
-		        <a href="<?php echo FrontController::urlFor('post', array('id'=>$post->id));?>">edit</a>
+		        <a href="<?php echo FrontController::urlFor('post', array('id'=>$post->id, 'last_page_viewed'=>$this->page));?>">edit</a>
 			</form>
 		<?php endif;?>
 		</section>
@@ -44,7 +44,7 @@
 				<input type="hidden" name="id" value="<?php echo $post->id;?>" />
 				<input type="hidden" name="_method" value="delete" />
 				<input type="submit" name="delete_button" value="delete post" />
-		        <a href="<?php echo FrontController::urlFor('post', array('id'=>$post->id));?>">edit</a>
+		        <a href="<?php echo FrontController::urlFor('post', array('id'=>$post->id, 'last_page_viewed'=>$this->page));?>">edit</a>
 			</form>
 		<?php endif;?>
 		</section>
@@ -61,7 +61,7 @@
 					<input type="hidden" name="id" value="<?php echo $post->id;?>" />
 					<input type="hidden" name="_method" value="delete" />
 					<input type="submit" name="delete_button" value="delete post" />
-			        <a href="<?php echo FrontController::urlFor('post', array('id'=>$post->id));?>">edit</a>
+			        <a href="<?php echo FrontController::urlFor('post', array('id'=>$post->id, 'last_page_viewed'=>$this->page));?>">edit</a>
 				</form>
 			<?php endif;?>
 		</section>
