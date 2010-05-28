@@ -1,10 +1,8 @@
-<form action="<?php echo FrontController::urlFor('profile');?>" method="post">
+<form action="<?php echo FrontController::urlFor('profile');?>" method="post" id="person_form">
 	<fieldset>
-		<legend>
-		Modify your profile
-		</legend>
+		<legend>{$person->name}</legend>
 		<p>
-			<label for="photo_url">Profile Pic:</label>
+			<label for="photo_url">Pic:</label>
 			<input type="text" id="photo_url" name="profile[photo_url]" value="<?php echo $person->profile->photo_url;?>" />
 		</p>
         <p>
@@ -48,7 +46,7 @@
 		</p>
 
 		<p>
-			<input type="submit" value="Save" name="save_button" />
+			<button type="submit" name="save_button" id="save_button"><span>Save</span></button>
 		</p>
 		<input type="hidden" id="id" name="id" value="{$person->id}" />
 		<input type="hidden" name="_method" value="put" />

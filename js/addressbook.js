@@ -34,7 +34,8 @@ UIView.List = function(id, options){
 		var elem = (e.target.nodeName.toLowerCase() === 'li' ? e.target : SDDom.getParent('li', e.target));
 		if(elem && e.target.nodeName.toLowerCase() !== 'input'){
 			if(this.delegate && this.delegate.itemWasClicked && elem){			
-				this.delegate.itemWasDoubleClicked.apply(this.delegate, [this, elem, e]);
+				this.delegate.itemWasDoubleClicked.apply(this.delegate, [this, elem]);
+				SDDom.stop(e);
 			}
 		}
 	};
@@ -43,17 +44,24 @@ UIView.List = function(id, options){
 		var elem = (e.target.nodeName.toLowerCase() === 'li' ? e.target : SDDom.getParent('li', e.target));
 		if(elem && e.target.nodeName.toLowerCase() !== 'input'){
 			if(!e.shift){
-				SDArray.each(SDDom.findAll('li', this.container), function(li){
-					deselect(li);
-				});
-			}			
-			this.set('selected_item', elem);
-			makeSelected(elem);
-			if(this.delegate && this.delegate.itemWasClicked && elem){			
-				this.delegate.itemWasClicked.apply(this.delegate, [this, elem, e]);
+				this.deselectAll();
 			}
+			this.select(elem, e);
+			if(this.delegate && this.delegate.itemWasClicked && elem){			
+				this.delegate.itemWasClicked.apply(this.delegate, [this, elem]);
+			}
+			SDDom.stop(e);
 		}
 	};
+	this.deselectAll = function(){
+		SDArray.each(SDDom.findAll('li', this.container), function(li){
+			deselect(li);
+		});
+	}
+	this.select = function(elem){
+		this.set('selected_item', elem);
+		makeSelected(elem);
+	}
 	this.onMouseUp = function(e){		
 		UIView.List.prototype.mouse_is_down = false;
 	};
@@ -250,21 +258,16 @@ UIView.List = function(id, options){
 }
 UIView.List.prototype.mouse_is_down = false;
 
-UIView.ToolBar = function(container, view, options){
+UIView.ToolBar = function(container, views, options){
 	UIView.apply(this, [container.id, options]);
-	this.view = view;
+	this.views = views;
 	this.container = container;
 	this.onClick = function(e){
-		var elem = (e.target.nodeName.toLowerCase() === 'a' ? e.target : SDDom.getParent('a', e.target));
-		if(elem){
-			if(this.delegate && this.delegate.itemWasClicked && elem){	
-				this.delegate.itemWasClicked.apply(this.delegate, [this, elem, e]);
-			}
-			this.view.addNewItem(this, elem);
-			SDDom.stop(e);
+		if(this.delegate && this.delegate.itemWasClicked && e.target){	
+			this.delegate.itemWasClicked.apply(this.delegate, [this, e.target]);
 		}
+		SDDom.stop(e);
 	};
-	
 	SDDom.addEventListener(this.container, 'click', this.bind(this.onClick));
 }
 UIController.AddressBook = function(views){
@@ -278,6 +281,7 @@ UIController.AddressBook = function(views){
 	this.views = views;
 	this.selectedGroup = null;
 	this.eventPersonWasClicked = null;
+	
 	this.itemWasDoubleClicked = function(view, elem, e){
 		switch(view.id){
 			case('groups'):
@@ -292,32 +296,44 @@ UIController.AddressBook = function(views){
 				break;
 		}
 	};
-	this.itemWasClicked = function(view, elem, e){
+	this.itemWasClicked = function(view, elem){
 		switch(view.id){
 			case('groups'):
-				this.getView('people').onBlur();
-				this.selectGroupItem(elem.getAttribute('rel'));
+				this.getView('people', this.views).onBlur();
+				this.selectGroupItem(elem.getAttribute('rel'), elem);
 				break;
 			case('people'):
-				this.getView('groups').onBlur();
-				this.selectPersonItem(elem.getAttribute('rel'));
-				if(e.target.nodeName !== 'BUTTON'){
-					SDDom.stop(e);
+				this.getView('groups', this.views).onBlur();
+				this.selectPersonItem(elem.getAttribute('rel'), elem);
+				break;
+			case('toolbar'):
+				var i = view.views.length;
+				elem = SDDom.getParent('button', elem);
+				if(elem){
+					if(elem.id === 'add_group_button'){
+						this.getView('groups', this.views).addNewItem(view, elem);
+					}else{
+						this.getView('people', this.views).addNewItem(view, elem);
+					}
+
 				}
 				break;
 		}
 	};
-	this.selectPersonItem = function(id){
+	this.selectPersonItem = function(id, elem){
 		var text = this.selectedGroup.getAttribute('rel');
 		var url = 'person/' + id + '.phtml';
 		if(text === 'Friend Requests'){
 			url = 'follower/' + id + '.phtml';
 		}
+		if(SDDom.hasClass('owner', elem)){
+			url = 'profile.phtml?state=modify';
+		}
 		if(this.url_field_observer !== null){
 			clearInterval(this.url_field_observer);
 		}
-		if(SDDom('friendrequest_form')){
-			SDDom.removeAllEventListeners(SDDom('friendrequest_form'));
+		if(SDDom('friend_request_form')){
+			SDDom.removeAllEventListeners(SDDom('friend_request_form'));
 		}
 		if(SDDom('person_form')){
 			SDDom.removeAllEventListeners(SDDom('person_form'));
@@ -328,17 +344,19 @@ UIController.AddressBook = function(views){
 	};
 	this.onPersonSelectedDONE = function(request){
 		SDDom('detail').innerHTML = request.responseText;
-		var form = SDDom('friendrequest_form');
+		var form = SDDom('friend_request_form');
 		if(form){
-			SDDom.addEventListener(form, 'submit', this.eventFollowFormDidSubmit);
+			// TODO: I left this in here in case I want to just display a confirmation page without leaving the addressbook
+			// view.
+			//SDDom.addEventListener(form, 'submit', this.eventFollowFormDidSubmit);
+			this.url_field = SDDom('url');
+			this.friend_request_button = SDDom('friend_request_button');
+			this.url_field_observer = setInterval(this.bind(this.observeUrlField), 250);
 		}
 		var person_form = SDDom('person_form');
 		if(person_form){
 			SDDom.addEventListener(person_form, 'submit', this.eventPersonFormDidSubmit);
 		}
-		this.url_field = SDDom('url');
-		this.friend_request_button = SDDom('friend_request_button');
-		this.url_field_observer = setInterval(this.bind(this.observeUrlField), 250);
 	};
 	this.onSelectGroupItemDONE = function(request){
 		alert(request.responseText);
@@ -353,15 +371,6 @@ UIController.AddressBook = function(views){
 	};
 	this.selectGroupItem = function(text){
 		var text = this.selectedGroup.getAttribute('rel');		
-		/*var form = SDDom.getParent('form', this.selectedGroup);
-		if(form !== null){
-			console.log(form);
-			var url = SDObject.rootUrl + url;
-			(new SDAjax({method: form.method
-				, parameters: SDDom.toQueryString(form)
-				, DONE: [this, this.onSelectGroupItemDONE]})).send(url);
-			
-		}*/
 		var url = 'people/' + text + '.phtml';
 		if(text === 'Friend Requests'){
 			url = 'followers.phtml';
@@ -374,7 +383,7 @@ UIController.AddressBook = function(views){
 		var response = JSON.parse(request.responseText);
 	};
 	this.itemWasDropped = function(dropped_on_item, grabbed_item, e){		
-		if(dropped_on_item && SDArray.contains(dropped_on_item, SDDom.findAll('li', this.getView('groups').container))){
+		if(dropped_on_item && SDArray.contains(dropped_on_item, SDDom.findAll('li', this.getView('groups', this.views).container))){
 			var person_id = grabbed_item.getAttribute('rel');
 			var group_text = dropped_on_item.getAttribute('rel');
 			(new SDAjax({parameters: 'group[text]=' + group_text + '&group[parent_id]=' + person_id
@@ -386,13 +395,18 @@ UIController.AddressBook = function(views){
 		var response = JSON.parse(request.responseText);
 		user_message.innerHTML = response.message;
 		SDDom.show(user_message);
-		SDDom.findFirst('legend', SDDom('person_form')).innerHTML = response.person.name;
+		//SDDom.findFirst('legend', SDDom('person_form')).innerHTML = response.person.name;
+		var elem = SDDom.findFirst('.selected', this.getView('people', this.views).container);
+		this.selectPersonItem(response.person.id, elem);
 	};
 	this.personFormDidSubmit = function(e){
+		var button = SDDom.findFirst('button', e.target);
+		if(button){
+			SDDom.setStyles({opacity: .5}, button);
+		}
 		(new SDAjax({method: e.target.method
 			, parameters: SDDom.toQueryString(e.target)
 			, DONE: [this, this.onPersonWasSubmittedDONE]})).send(e.target.action + '.json');
-
 		SDDom.stop(e);
 	};
 	this.onFollowWasSubmittedDONE = function(request){		
@@ -413,18 +427,20 @@ UIController.AddressBook = function(views){
 	};
 	this.onNewGroupSubmitDONE = function(request){
 		var response = JSON.parse(request.responseText, false);
-		var new_item = this.getView('groups').addItem(response.group.text, response.group.text);
+		var new_item = this.getView('groups', this.views).addItem(response.group.text, response.group.text);
 	};
 	
 	this.onNewPersonSubmitDONE = function(request){
 		var response = JSON.parse(request.responseText, false);
-		var new_item = this.getView('people').addItem(response.person.name, response.person.id);
-		var span = SDDom.findAll('span', new_item);
+		var new_item = this.getView('people', this.views).addItem(response.person.name, response.person.id);
+		var span = SDDom.findFirst('span', new_item);
 		span.setAttribute('rel', response.person.id);
 		var a = SDDom.create('a', {href:SDObject.rootUrl + 'person/' + response.person.id
 			, title: 'edit ' + response.person.name});
 		SDDom.append(span, a);
-		
+		this.selectPersonItem(response.person.id, new_item);
+		this.getView('people', this.views).deselectAll();
+		this.getView('people', this.views).select(new_item);
 	};
 	this.onSubmit = function(view, e){
 		SDDom.stop(e);
@@ -449,15 +465,15 @@ UIController.AddressBook = function(views){
 	
 	this.onDeleteDONE = function(request){
 		var response = JSON.parse(request.responseText, false);
-		this.getView('groups').removeDeletedItems();
+		this.getView('groups', this.views).removeDeletedItems();
 	};
 	this.onPersonDeleteDONE = function(request){		
 		var response = JSON.parse(request.responseText, false);
-		this.getView('people').removeDeletedItems();	
+		this.getView('people', this.views).removeDeletedItems();	
 	};
 	this.onGroupDeleteDONE = function(request){
 		var response = JSON.parse(request.responseText, false);
-		this.getView('groups').removeDeletedItems();
+		this.getView('groups', this.views).removeDeletedItems();
 	};
 	this.onDeleteKeyPressed = function(view, selected_elements, e){
 		if(view.id === 'groups'){
@@ -471,7 +487,7 @@ UIController.AddressBook = function(views){
 				
 			}
 		}else if(view.id === 'people'){			
-			var selected_group = this.getView('groups').get('selected_item');
+			var selected_group = this.getView('groups', this.views).get('selected_item');
 			var people = SDArray.pluck(selected_elements, function(elem){return elem.getAttribute('rel');}).join(',');
 			var group = selected_group.getAttribute('rel');
 			if(group === 'All Contacts'){
@@ -488,8 +504,8 @@ UIController.AddressBook = function(views){
 			}
 		}
 	};
-	this.getView = function(id){
-		var found = SDArray.find(this.views, function(view){
+	this.getView = function(id, views){
+		var found = SDArray.find(views, function(view){
 			return view.id === id;
 		});
 		return found;
@@ -539,10 +555,11 @@ SDDom.addEventListener(window, 'load', function(){
 	try{
 		var groupListView = new UIView.List('groups', {field_name: 'group[text]', field_default_value:'new group', is_draggable: false});
 		var personListView = new UIView.List('people', {is_droppable: false, field_name: 'person[name]', field_default_value: 'new person'});
-		var groupToolBarView = new UIView.ToolBar(SDDom.findFirst('#groups footer nav'), groupListView, null);	
-		var peopleToolBarView = new UIView.ToolBar(SDDom.findFirst('#people footer nav'), personListView, null);	
+		//var groupToolBarView = new UIView.ToolBar(SDDom.findFirst('#groups footer nav'), groupListView, null);	
+		//var peopleToolBarView = new UIView.ToolBar(SDDom.findFirst('#people footer nav'), personListView, null);
+		var toolbarView = new UIView.ToolBar(SDDom('toolbar'), [groupListView, personListView], null);	
 
-		var controller = new UIController.AddressBook([groupListView, personListView, groupToolBarView, peopleToolBarView]);
+		var controller = new UIController.AddressBook([groupListView, personListView, toolbarView]);
 	}catch(e){
 		alert('Oh snap!' + e);
 	}

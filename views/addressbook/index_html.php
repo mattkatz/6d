@@ -22,23 +22,17 @@
 			</li>
 		<?php endforeach;?>
 		</ul>
-		<footer>
-			<nav>
-				<a id="add_group_link" class="add" href="<?php echo FrontController::urlFor('group');?>" title="add a group"><span>+</span></a>
-			</nav>
-		</footer>
 	</section>
 	<section id="people">
-		<h1>Contacts</h1>
-		<?php echo $this->renderView('person/index', null, 'html');?>
-		<footer>
-			<nav>
-				<a id="add_link" class="add" href="<?php echo FrontController::urlFor('addressbook');?>" title="add someone">+</a>
-			</nav>
-		</footer>
+		<h1>Name</h1>
+		<?php echo $this->renderView('person/index', null, 'phtml');?>
 	</section>
 	<section id="detail" class="detail"></section>
 	<div style="clear: both;"></div>
+	<footer id="toolbar">
+		<button id="add_group_button"><span>Create a Group</span></button>
+		<button id="add_card_button"><span>Create a Card</span></button>
+	</footer>
 </div>
 <section id="instructions">
 	<ul>

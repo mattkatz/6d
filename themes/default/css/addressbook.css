@@ -87,3 +87,7 @@ li.inactive{
 li.hot{
 	background: lightBlue;
 }
+button[disabled=true]{
+	opacity: .5;
+	filter: alpha(opacity=50);
+}

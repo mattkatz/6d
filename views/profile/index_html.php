@@ -1,4 +1,3 @@
-
 <section class="vcard">
 	<img style="float:left; margin-right:4px" src="<?php echo ProfileResource::getPhotoUrl($person);?>" alt="photo of {$person->name}" class="photo"/>
 	<span class="fn name">{$person->name}</span>

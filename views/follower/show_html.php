@@ -1,4 +1,4 @@
-<form action="<?php echo FrontController::urlFor('follower');?>" method="post" class="body" id="friendrequest_form">
+<form action="<?php echo FrontController::urlFor('follower');?>" method="post" class="body" id="friend_request_form">
 	<fieldset>
 		<legend><?php echo ($person->name == null ? 'New friend' : $person->name);?></legend>
 		<p>

@@ -78,34 +78,36 @@ class ProfileResource extends AppResource{
 		if(!AuthController::isAuthorized()){
 			throw new Exception(FrontController::UNAUTHORIZED, 401);
 		}
-		$person->setSession_id(session_id());
+		$this->person = $person;
+		$this->person->setSession_id(session_id());
 		$owner = Person::findOwner();
 		if($owner !== null){
 			$owner->setIs_owner(false);
 			Person::save($owner);
 		}
-		$person->setIs_owner(true);
-		if($person->id > 0){
-			$existing_person = Person::findById($person->id);
-			$person->setUid($existing_person->getUid());
+		$this->person->setIs_owner(true);
+		if($this->person->id > 0){
+			$existing_person = Person::findById($this->person->id);
+			$this->person->setUid($existing_person->getUid());
 		}else{
-			$person->setUid(uniqid());
+			$this->person->setUid(uniqid());
 		}
 		if($profile != null){
-			$person->setProfile(serialize($profile));
+			$this->person->setProfile(serialize($profile));
 		}
-		$person->url = String::replace('/http[s]?\:\/\//', '', FrontController::$site_path);
-		$person->url = String::replace('/\/$/', '', $person->url);
-		$person->is_approved = true;
-		$person = Person::save($person);
+		$this->person->url = String::replace('/http[s]?\:\/\//', '', FrontController::$site_path);
+		$this->person->url = String::replace('/\/$/', '', $this->person->url);
+		$this->person->is_approved = true;
+		$this->person = Person::save($this->person);
 		if(count($errors) == 0){
 			self::setUserMessage('Profile saved');
-			$this->redirectTo('profile');
 		}else{
 			$message = $this->renderView('install/error', array('message'=>"The following errors occurred when saving your profile. Please resolve and try again.", 'errors'=>$errors));					
 			self::setUserMessage($message);
-			$this->redirectTo('profile');
 		}
+		$view = 'profile/index';
+		$this->output = $this->renderView($view, array('errors'=>$errors));
+		return $this->renderView('layouts/default');
 	}
 }
 

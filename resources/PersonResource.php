@@ -45,7 +45,7 @@ class_exists('NotificationResource') || require('NotificationResource.php');
 				throw new Exception('Person id must be set');
 			}
 			$person = Person::findById($person->id);
-			if(!$person->getIs_owner()){
+			if(!$person->is_owner){
 				Person::delete($person);
 			}else{
 				UserResource::setUserMessage("You can't delete the owner of the site.");
