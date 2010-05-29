@@ -59,7 +59,6 @@ class IndexResource extends AppResource{
 		if($this->page < 1){
 			$this->page = 1;
 		}	
-
 		if($tag == null){
 			if($home_page_post_id != null){
 				$this->post = Post::findHomePage($home_page_post_id);
@@ -69,11 +68,6 @@ class IndexResource extends AppResource{
 			}
 		}else{
 			$this->posts = Post::findPublishedByTag(new Tag(array('text'=>$tag)), ($this->page-1) * 5, 5, $this->sort_by, $this->sort_by_direction);	
-		}
-		
-		if(count($this->posts) === 0){
-			self::setUserMessage('There are no more posts to show for that request.');
-			$this->redirectTo(null);
 		}
 		
 		$this->output = $this->renderView($view, null);
