@@ -28,9 +28,13 @@ class FollowerResource extends AppResource{
 		return $this->renderView('layouts/default', null);
 		
 	}
-	private function save($request){
-		$request = FriendRequest::findById($request->id);
-		$person = Person::findByUrl($request->url);
+	private function save($request, $person = null){
+		if($request === null){
+			$request = FriendRequest::findById($request->id);
+		}
+		if($person === null){
+			$person = Person::findByUrl($request->url);
+		}
 		if($request !== null){
 			if($person === null){
 				$person = new Person(array('email'=>$request->getEmail()
@@ -93,7 +97,7 @@ class FollowerResource extends AppResource{
 		}else{
 			// Someone has sent another friend request, but is already a friend.
 			$friend_request = new FriendRequest(array('name'=>$this->person->name, 'email'=>$this->person->email, 'public_key'=>$this->person->public_key, 'created'=>date('c'), 'url'=>$this->person->url));
-			$this->save($friend_request);
+			$this->save($friend_request, $this->person);
 		}
 		$owner = Person::findOwner();
 		return "Thanks for the request. I'll make sure " . $owner->name . " gets it.";
