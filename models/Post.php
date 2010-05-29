@@ -117,7 +117,9 @@
 		public function setTags($val){
 			$this->tags = $val;
 		}
-		
+		public function getHowLongAgo(){
+			return $this->post_date;
+		}
 		public function isHomePage($home_page_post_id){
 			return $this->id > 0 && $this->id == $home_page_post_id;
 		}
@@ -189,7 +191,7 @@
 				$sort_by = $post->getTableName() . '.id';
 			}
 			$tag->text = urlencode($tag->text);
-			$list = $db->find(new ByClause("tags like '%{$tag->text}%'", null, array($start, $limit), array($sort_by=>$sort_by_direction)), $post);
+			$list = $db->find(new ByClause("tags like '%{$tag}%'", null, array($start, $limit), array($sort_by=>$sort_by_direction)), $post);
 			$list = ($list == null ? array() : $list);
 			return $list;
 		}

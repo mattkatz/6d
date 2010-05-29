@@ -64,6 +64,12 @@ class Profile extends Object{
 	public function setSite_name($val){
 		$this->site_name = $val;
 	}
-
+	private $site_description;
+	public function getSite_description(){
+		return $this->site_description;
+	}
+	public function setSite_description($val){
+		$this->site_description = $val;
+	}
 
 }

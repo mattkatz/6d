@@ -12,7 +12,7 @@
 	<ul id="tables" class="horizontal" style="display: none;"></ul>
 </div>
 <div style="clear: both"></div>
-<div id="query" class="query" contentEditable="true"></div>
+<textarea id="query" cols="100" rows="20"></textarea>
 <a href="javascript:void(0);" id="execute_link">execute!</a>
 <div id="query_results"></div>
 
@@ -20,63 +20,74 @@
 <script type="text/javascript">
 	var links = [];
 	var db_name = '';
+	function onDbWasClicked(request){
+		SDDom('tables').innerHTML = request.responseText;
+		tablesViewWillLoad(null);
+	}
 	function dbDidClick(e){
 		db_name = this.text;
-		new Request.HTML({update:'tables', url:'<?php echo FrontController::urlFor('tables');?>', onSuccess:tablesViewWillLoad}).get({db_name:this.text});
-		$$('ul.horizontal li').each(function(li){
+		(new SDAjax({method: 'get', parameters: 'db_name=' + db_name
+			, DONE: [window, onDbWasClicked]})).send('<?php echo FrontController::urlFor('tables');?>');
+		
+		SDArray.each(SDDom.findAll('ul.horizontal li'), function(li){
 			li.className = 'closed';
 		});
-		this.getParent().className = 'opened';
+		e.target.parentNode.className = 'opened';
 	}
 	function tablesViewWillLoad(responseTree, responseElements, responseHTML, responseJavaScript){
-		$('tables').setStyle('display', 'block');
-		$('db_name').set('html', db_name);
+		SDDom.setStyles({"display":"block"}, SDDom('tables'));
+		SDDom('db_name').innerHTML = db_name;
 		tablesViewDidLoad(null);
 	}
 	function tablesViewDidLoad(elem){
 		addObserverToTableLinks();
 	}
 	function addObserverToTableLinks(){
-		$$('a.delete').each(function(link){
-			link.addEvent('click', deleteTableWasClicked);
+		SDArray.each(SDDom.findAll('a.delete'), function(link){
+			SDDom.addEventListener(link, 'click', deleteTableWasClicked);
 		});
 	}
 	function removeObserverFromTableLinks(){
-		$$('a.delete').each(function(link){
-			link.removeEvent('click', deleteTableWasClicked);
+		SDArray.each(SDDom.findAll('a.delete'), function(link){
+			SDDom.removeEventListener(link, 'click', deleteTableWasClicked);
 		});
+	}
+	function onDeleteTable(request){
+		SDDom('tables').innerHTML = request.responseText;
+		tablesViewDidLoad(null);
 	}
 	function deleteTableWasClicked(e){
 		removeObserverFromTableLinks();
-		var table_name = $(e.target).get('table');
+		var table_name = e.target.getAttribute('table');
 		var form_to_submit = e.target.parentNode;
 		if(confirm('Are you sure you want to delete ' + table_name + '?')){
-			var request = new Request.HTML({url:'<?php echo FrontController::urlFor('table');?>', update:'tables', onSuccess: tablesViewDidLoad}).post($(form_to_submit));
+			
+			(new SDAjax({method: 'post', parameters: SDDom.toQueryString(form_to_submit)
+				, DONE: [window, onDeleteTable]})).send('<?php echo FrontController::urlFor('table');?>');
+
 		}
 		return false;
 	}
 	function databasesViewDidLoad(){
-		$('navigation_controller_header').set('html', 'Databases');
+		SDDom('navigation_controller_header').innerHTML = 'Databases';
 	}
-	function backWasClicked(e){
-		new Fx.Tween('databases_column', {onComplete: databasesViewDidLoad}).start('margin-left', -320, 0);
-		return false;
+	function onQueryDidExecute(request){
+		SDDom('query_results').innerHTML = request.responseText;
 	}
 	function executeLinkWasClicked(e){
-		var query = $('query').get('html');
-		var request = new Request.HTML({url:'<?php echo FrontController::urlFor('query');?>', update: 'query_results', data:'db_name=' + db_name + '&query=' + query});
-		request.send();
+		var query = SDDom('query').value;
+		(new SDAjax({method: 'post', parameters: 'db_name=' + db_name + '&query=' + query
+			, DONE: [window, onQueryDidExecute]})).send('<?php echo FrontController::urlFor('query');?>');
+		
 		return false;
 	}
-	window.addEvent('domready', function(){
+	SDDom.addEventListener(window, 'load', function(){
 		var original = {};
 		var extended = {};
-		var test = $extend(original, extended);
-		links = $$('a.database');
-		links.each(function(a){
-			a.addEvent('click', dbDidClick);
+		links = SDDom.findAll('a.database');
+		SDArray.each(links, function(a){
+			SDDom.addEventListener(a, 'click', dbDidClick);
 		});
-		
-		$('execute_link').addEvent('click', executeLinkWasClicked);
+		SDDom.addEventListener(SDDom('execute_link'), 'click', executeLinkWasClicked);
 	});
 </script>

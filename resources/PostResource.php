@@ -98,7 +98,6 @@ class PostResource extends AppResource{
 						$post->post_date = date('c', strtotime('+1 week'));
 						break;
 				}
-
 				list($post, $errors) = Post::save($post);
 				if($errors == null){
 					if($make_home_page){
@@ -109,7 +108,7 @@ class PostResource extends AppResource{
 						Setting::delete('home_page_post_id');
 					}
 					self::setUserMessage('Post was saved.');
-					$this->sendPostToPersons($groups, $people, $post);
+					$this->sendPostToPeople($groups, $people, $post);
 				}else{
 					$message = 'An error occurred while saving your post:';
 					foreach($errors as $key=>$value){
@@ -172,7 +171,7 @@ class PostResource extends AppResource{
 					Setting::delete('home_page_post_id');
 				}
 				self::setUserMessage('Post was saved.');
-				$this->sendPostToPersons($groups, $people, $post);
+				$this->sendPostToPeople($groups, $people, $post);
 			}else{
 				$message = 'An error occurred while saving your post:';
 				foreach($errors as $key=>$value){
@@ -192,7 +191,7 @@ class PostResource extends AppResource{
 		self::setUserMessage(sprintf("'%s' was deleted.", $post->title));
 		$this->redirectTo('posts');
 	}
-	private function sendPostToPersons($groups, $people, Post $post){
+	private function sendPostToPeople($groups, $people, Post $post){
 		$data = null;
 		if(count($groups) > 0){
 			foreach($groups as $text){

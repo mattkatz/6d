@@ -28,23 +28,18 @@ class PostsResource extends AppResource{
 		if($this->page <= 0){
 			$this->page = 1;
 		}
-		$start = ($this->page-1) * $this->limit;
-
+		$this->start = ($this->page-1) * $this->limit;
 		$this->sort_by = 'id';
 		$this->sort_by_direction = 'desc';
 		if($tag === 'author'){
 			$author_id = array_shift($this->url_parts);
 			$this->posts = $this->getPostsByAuthor($author_id);
 		}else if($tag !== null){
-			$this->title = 'All Posts Tagged ' . $tag->text;
+			$this->title = 'All Posts Tagged ' . $tag;
 			$this->posts = $this->getPostsByTag($tag);
 		}else{
 			$this->title = 'All Posts';
-			$this->posts = $this->getAllPosts($start, $this->limit, $this->sort_by, $this->sort_by_direction);
-		}
-		if(count($this->posts) === 0){
-			self::setUserMessage('There are no more posts to show for that request.');
-			$this->redirectTo('posts');
+			$this->posts = $this->getAllPosts($this->start, $this->limit, $this->sort_by, $this->sort_by_direction);
 		}
 		$this->output = $this->renderView('post/index');
 		$this->keywords = implode(', ', String::getKeyWordsFromContent($this->output));
@@ -55,14 +50,13 @@ class PostsResource extends AppResource{
 				$this->description .= $post->title . ',';
 			}
 		}
-		
 		return $this->renderView('layouts/default');
 	}
 	private function getAllPosts($start, $limit, $sort_by, $sort_by_direction){
-		return Post::find($start, $this->limit, $this->sort_by, $this->sort_by_direction);			
+		return Post::find($start, $limit, $sort_by, $sort_by_direction);			
 	}
 	private function getPostsByTag($tag){
-		return Post::findByTag($tag, $start, $this->limit, $this->sort_by, $this->sort_by_direction);
+		return Post::findByTag($tag, $this->start, $this->limit, $this->sort_by, $this->sort_by_direction);
 	}
 	private function getPostsByAuthor($author){
 		$person = new Person(array('id'=>$author_id));

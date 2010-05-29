@@ -44,6 +44,11 @@
 					$this->owner = Person::findOwner();
 					$this->owner->profile = unserialize($this->owner->profile);
 					$this->title = $this->owner->profile->site_name;
+					$theme_path = FrontController::getAppPath() . '/' . FrontController::themePath() . '/ThemeController.php';
+					if(file_exists($theme_path)){
+						require($theme_path);
+						$this->theme = new ThemeController($this);
+					}
 				}catch(Exception $e){}
 			}
 		}
@@ -52,6 +57,9 @@
 			parent::__destruct();
 		}
 		public $owner;
+		public $show_notes;
+		public $notes;
+		public $theme;
 		public $resource_css;
 		public $resource_js;
 		protected $settings;

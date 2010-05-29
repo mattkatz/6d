@@ -468,10 +468,9 @@ function SDAjax(options){
 	}
 	this.send = function(url){
 		if(request == null) return;
-		
 		if(this.options.parameters){
 			if(this.options.method == 'get'){
-				url += (url.test(/\?/) ? '&' : '?') + this.options.parameters;
+				url += (/\?/.test(url) ? '&' : '?') + this.options.parameters;
 			}else if(/Konqueror|Safari|KHTML/.test(navigator.userAgent)){
 				this.options.parameters += '&_=';
 			}

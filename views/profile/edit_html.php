@@ -44,7 +44,10 @@
 			<label for="profile[site_name]">Site Name:</label>
 			<input type="text" id="profile[site_name]" name="profile[site_name]" value="<?php echo $person->profile->site_name;?>" />
 		</p>
-
+		<p>
+			<label for="profile[site_description]">Site Description:</label>
+			<input type="text" id="profile[site_description]" name="profile[site_description]" value="<?php echo $person->profile->site_description;?>" />
+		</p>
 		<p>
 			<button type="submit" name="save_button" id="save_button"><span>Save</span></button>
 		</p>
