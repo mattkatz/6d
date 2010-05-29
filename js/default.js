@@ -242,6 +242,9 @@ SDDom.findFirst = function(css_selector, elem){
 };
 SDDom.getParent = function(tag, elem){
 	var node_name = elem.nodeName.toLowerCase();
+	if(tag == node_name){
+		return elem;
+	}
 	function findParent(tag, elem){
 		if(elem === document){
 			return null;
