@@ -94,20 +94,32 @@
 			}
 			return $errors;
 		}
-
+		private function createHttaccessFile(){
+			$htaccess_file = 'htaccess.php';
+			require($htaccess_file);
+			$virtual_path = String::replace('/\/index\.php/', '/', FrontController::getVirtualPath());
+			$htaccess = String::replace('/6d/', $virtual_path, $htaccess);
+			$did_write = file_put_contents(FrontController::getRootPath('/.htaccess'), $htaccess);
+			return $did_write;
+		}
 		public function put(Configuration $config){
-			// Set the dbType here. This should be the only place where we define the database type.
 			$errors = array();
 			$_SESSION['configuration'] = serialize($config);
 			$this->configuration = $_SESSION['configuration'];
 			$db = Factory::get($config->db_type, $config);
-
+			$path = FrontController::getRootPath(null);
+			if(!is_writable($path)){
+				self::setUserMessage("I was unable to create an httaccess file. I need write access to the folder that you're trying to install 6d.");
+				$this->redirectTo('install/configuration');
+				return null;
+			}
+			$this->createHttaccessFile();
 			try{
 				$db->testConnection();
 			}catch(Exception $e){
 				$errors[] = $e->getCode() . ':' . $e->getMessage();
 			}
-			
+
 			if(count($errors) > 0){
 				try{
 					$db->createDatabase($config->database);
@@ -116,19 +128,19 @@
 					error_log('error message ' . $db->errorMessage);
 				}
 			}
-			
+
 			$errors = array_merge($config->validate(), $errors);
 			try{
 				if(count($errors) == 0){
 					$config->site_password = $config->site_password;
 					$config->installed = true;
-					$config->save(FrontController::getAppPath() . '/AppConfiguration.php');
+					$config->save(FrontController::getRootPath('/AppConfiguration.php'));
 					class_exists('AppConfiguration') || require('AppConfiguration.php');
 				}
 			}catch(Exception $e){
 				$errors[] = $e->getMessage();
 			}
-			
+
 			if(count($errors) == 0){
 				error_log('installing...');
 				$errors = $this->createTables($db, $config);
@@ -152,7 +164,7 @@
 					}
 				}
 			}
-			
+
 			if(count($errors) > 0){
 				$message = $this->renderView('install/error', array('message'=>"The following errors occurred when saving the configuration file. Please resolve and try again.", 'errors'=>$errors));					
 				self::setUserMessage($message);
@@ -160,13 +172,9 @@
 			}else{
 				unset($_SESSION['configuration']);
 				// Create the htaccess file.
-				$htaccess_file = 'htaccess.php';
-				require($htaccess_file);
-				$virtual_path = String::replace('/\/index\.php/', '/', FrontController::getVirtualPath());
-				$htaccess = String::replace('/sixd/', $virtual_path, $htaccess);
-				$did_write = file_put_contents(FrontController::getDocumentRoot() . FrontController::getVirtualPath() . '/.htaccess', $htaccess);
 				$this->redirectTo('install/done');
 			}
+
         }
         
     }

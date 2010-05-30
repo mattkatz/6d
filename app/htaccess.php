@@ -2,10 +2,10 @@
 $htaccess = <<<eos
 Options +FollowSymLinks -MultiViews
 RewriteEngine On
-RewriteBase /sixd
+RewriteBase /6d
 
 RewriteCond %{HTTPS} on
-RewriteBase /sixd
+RewriteBase /6d
 
 ErrorDocument 404 index.php
 

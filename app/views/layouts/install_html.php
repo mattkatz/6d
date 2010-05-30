@@ -11,8 +11,6 @@
 		<meta name="viewport" content="width=980"/>
 		<link rel="stylesheet" type="text/css" href="<?php echo FrontController::urlFor('themes');?>css/default.css" media="all" />
 		{$resource_css}
-		<script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.3/mootools.js"></script>
-		<script type="text/javascript" language="javascript" src="<?php echo FrontController::urlFor('js');?>mootools-more.js"></script>
 	</head>
 	<body>
 		<?php echo UserResource::getUserMessage();?>			

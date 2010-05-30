@@ -120,7 +120,7 @@ class FrontController extends Object{
 		return array_key_exists('HTTPS', $_SERVER);
 	}
 	public static function canRewriteUrl(){
-		return file_exists(self::getDocumentRoot() . self::getVirtualPath() . '/.htaccess');
+		return file_exists(self::getRootPath('/.htaccess'));
 	}
 	public static function index_script(){
 		return self::canRewriteUrl() ? null : 'index.php/';
@@ -258,10 +258,10 @@ class FrontController extends Object{
 	
 	/*
 		Root path is the absolute path to the file passed in relative to the app path. On my dev box, it's
-		"/Library/WebServer/Documents/sixd/" + $file
+		"/Library/WebServer/Documents/6d/" + $file
 	*/
 	public static function getRootPath($file){
-		return str_replace('lib/FrontController.php', $file, __FILE__);
+		return String::replace('/\/index\.php/', $file, $_SERVER['SCRIPT_FILENAME']);
 	}
 	/*
 		This is the virtual directory that the app is located in. For instance, I have several sites set up
@@ -276,17 +276,10 @@ class FrontController extends Object{
 		the same sixd code base. AppPath is the location of the core code base. On my dev box, it's
 		"/Library/WebServer/Documents/sixd"
 	*/
-	public static function getAppPath(){
-		return String::replace('/\/index\.php/', '', $_SERVER['SCRIPT_FILENAME']);
+	public static function getAppPath($file){
+		return str_replace('lib/FrontController.php', $file, __FILE__);
 	}
 	
-	/*
-		Document root is full path to the web servers docuemnt root, where it first looks for files upon
-		request. On my dev box, it's "/Library/WebServer/Documents/"
-	*/
-	public static function getDocumentRoot(){
-		return String::replace('/' . self::getVirtualPath() . '/', '', self::getAppPath());
-	}
 	public static function getEncoding(){
 		$encoding = $_SERVER["HTTP_ACCEPT_ENCODING"];
 		if(headers_sent()){
@@ -349,8 +342,9 @@ class FrontController extends Object{
 		$class_name = sprintf('%sResource', $resource_name);
 		$file = $resource_path . $class_name . '.php';
 		if(!file_exists($file)){
-			$file = self::getRootPath($file);
+			$file = self::getAppPath('/' . $file);
 		}
+
 		if(file_exists($file)){
 			class_exists($class_name) || require($file);
 			try{

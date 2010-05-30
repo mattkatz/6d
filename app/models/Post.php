@@ -115,6 +115,9 @@
 			return $this->tags;
 		}
 		public function setTags($val){
+			if(!is_array($val)){
+				$val =  String::explodeAndTrim($val);
+			}
 			$this->tags = $val;
 		}
 		public function getHowLongAgo(){

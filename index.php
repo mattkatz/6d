@@ -1,11 +1,13 @@
 <?php
 session_start();
 date_default_timezone_set('US/Central');
+set_include_path(get_include_path() . PATH_SEPARATOR . str_replace('/index.php', '', $_SERVER['SCRIPT_FILENAME']));
+set_include_path(get_include_path() . PATH_SEPARATOR . str_replace('/index.php', '/app', $_SERVER['SCRIPT_FILENAME']));
+//set_include_path(get_include_path() . PATH_SEPARATOR . str_replace('/index.php', '', $_SERVER['SCRIPT_FILENAME']));
+//set_include_path(get_include_path() . PATH_SEPARATOR . '../6d/app');
 if(file_exists('AppConfiguration.php')){
 	class_exists('AppConfiguration') || require('AppConfiguration.php');	
 }
-//set_include_path(get_include_path() . PATH_SEPARATOR . str_replace('/index.php', '', $_SERVER['SCRIPT_FILENAME']));
-//set_include_path(get_include_path() . PATH_SEPARATOR . '../6d');
 class_exists('FrontController') || require('lib/FrontController.php');
 class_exists('NotificationCenter') || require('lib/NotificationCenter.php');
 class_exists('Log') || require('lib/Log.php');

@@ -182,14 +182,14 @@ class PostResource extends AppResource{
 			$this->redirectTo('posts');
 		}		
 	}
-	public function delete(Post $post){
+	public function delete(Post $post, $last_page_viewed){
 		if(! AuthController::isAuthorized()){
 			throw new Exception(FrontController::UNAUTHORIZED, 401);
 		}
 		$post = Post::findById($post->id);
 		Post::delete($post);
 		self::setUserMessage(sprintf("'%s' was deleted.", $post->title));
-		$this->redirectTo('posts');
+		$this->redirectTo('posts/' . $last_page_viewed);
 	}
 	private function sendPostToPeople($groups, $people, Post $post){
 		$data = null;

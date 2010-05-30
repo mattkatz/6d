@@ -13,11 +13,11 @@
 			$resource_name = strtolower(str_replace('Resource', '', get_class($this)));				
 			$this->resource_css = $resource_name . '.css';
 			$this->resource_js = $resource_name . '.js';
-			$root = str_replace('resources', '', dirname(__FILE__));
+			$root = FrontController::getRootPath();
 			if(file_exists($root . FrontController::themePath() . '/js/' . $this->resource_js)){
 				$this->resource_js = FrontController::urlFor('themes') . 'js/' . $this->resource_js;
 				$this->resource_js = $this->to_script_tag('text/javascript', $this->resource_js);
-			}elseif(file_exists($root . 'js/' . $this->resource_js)){
+			}elseif(file_exists($root . '/js/' . $this->resource_js)){
 				$this->resource_js = FrontController::urlFor('js') . $this->resource_js;
 				$this->resource_js = $this->to_script_tag('text/javascript', $this->resource_js);
 			}else{
@@ -44,9 +44,9 @@
 					$this->owner = Person::findOwner();
 					$this->owner->profile = unserialize($this->owner->profile);
 					$this->title = $this->owner->profile->site_name;
-					$theme_path = FrontController::getAppPath() . '/' . FrontController::themePath() . '/ThemeController.php';
+					$theme_path = FrontController::getRootPath('/' . FrontController::themePath() . '/ThemeController.php');
 					if(file_exists($theme_path)){
-						require($theme_path);
+						class_exists('ThemeController') || require($theme_path);
 						$this->theme = new ThemeController($this);
 					}
 				}catch(Exception $e){}
@@ -125,8 +125,24 @@
 			}
 			return $plugins;
 		}
+		public function shouldShowPrevious($posts, $page){
+			return (count($posts) > 0 && $page > 1);
+		}
+		public function shouldShowNext($posts, $limit){
+			return (count($posts) >= $limit);
+		}
+		public function getPreviousPageUrl($page, $resource_name){
+			$page = ($page > 1 ? $page - 1 : null);
+			$resource_name = ($resource_name === 'index' ? null : $resource_name . '/');
+			return FrontController::urlFor($resource_name) . $page;
+		}
+		public function getNextPageUrl($page, $resource_name){
+			$page = ($page === 0 ? $page + 2 : $page + 1);
+			$resource_name = ($resource_name === 'index' ? null : $resource_name . '/');
+			return FrontController::urlFor($resource_name) . $page;
+		}
 		private function getFiles($folder_name, $name){
-			$root = FrontController::getDocumentRoot() . FrontController::getVirtualPath() . '/' . $folder_name;
+			$root = FrontController::getRootPath() . '/' . $folder_name;
 			$folders = $this->getFolders($root);
 			$plugin_paths = array();
 			foreach($folders as $folder){

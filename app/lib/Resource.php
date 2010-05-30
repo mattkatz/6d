@@ -52,14 +52,15 @@ class Resource extends Object{
 			}
 			
 			ob_start();
-			/*
-			printf("root = %s<br />virtual = %s<br />app = %s<br />document = %s<br />theme = %s<br />", FrontController::getRootPath()
-				, FrontController::getVirtualPath(), FrontController::getAppPath(), FrontController::getDocumentRoot()
-				, FrontController::themePath());
-			echo $__theme_view;
-			*/		
-			$__theme_view = FrontController::getAppPath() . '/' . FrontController::themePath() . '/views/' . $__full_path;
+			
+			$__theme_view = FrontController::getRootPath('/' . FrontController::themePath() . '/views/' . $__full_path);
 			$__default_view = str_replace('lib/Resource.php', '', __FILE__) . 'views/' . $__full_path;
+			/*printf("root = %s<br />virtual = %s<br />app = %s<br />theme = %s<br /><br />", FrontController::getRootPath()
+				, FrontController::getVirtualPath(), FrontController::getAppPath()
+				, FrontController::themePath());
+				
+			echo $__theme_view . '<br />';
+			echo $__default_view;*/
 			// phtml is a special file type that I want to provide fallback logic for. If the file type
 			// is phtml, then I want to check for a view with that extension but if it doesn't exist, 
 			// the code should fall back and load the html view instead. This allows us to use .html views
