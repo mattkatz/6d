@@ -65,6 +65,7 @@
 		protected $settings;
 		protected $config;
 		protected static $error_html;
+		public $q;
 		public function willReturnValueForKey($key, $obj, $val){
 			return $val;
 		}

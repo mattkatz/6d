@@ -68,16 +68,16 @@
 <?php endif;?>
 	</nav>
 </form>
-	<!--<form enctype="multipart/form-data" target="upload_target" method="post" id="media_form" action="<?php echo FrontController::urlFor('photo');?>">
-		<input type="hidden" value="put" name="_method" />
-		<fieldset>
-			<legend>Media</legend>
-	                 <section>
-				<label for="photo" id="photo_label">Add a photo</label>
-				<input type="file" name="photo" id="photo" />
-	                 </section>
-	                 <input type="hidden" name="MAX_FILE_SIZE" value="{$max_filesize}" />
-			<iframe src="<?php echo FrontController::urlFor('empty');?>" id="upload_target" name="upload_target" style="width:10;height:10;border:none;"></iframe>
-		</fieldset>
-	</form>
-	<dl id="photos"></dl>-->
+<form enctype="multipart/form-data" target="upload_target" method="post" id="media_form" action="<?php echo FrontController::urlFor('photo');?>">
+	<input type="hidden" value="put" name="_method" />
+	<fieldset>
+		<legend>Media</legend>
+		<section>
+			<label for="photo" id="photo_label">Add a photo</label>
+			<input type="file" name="photo" id="photo" />
+		</section>
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$max_filesize}" />
+		<iframe src="<?php echo FrontController::urlFor('empty');?>" id="upload_target" name="upload_target" style="width:10;height:10;border:none;"></iframe>
+	</fieldset>
+</form>
+<dl id="photos"></dl>

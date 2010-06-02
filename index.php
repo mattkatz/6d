@@ -3,7 +3,6 @@ session_start();
 date_default_timezone_set('US/Central');
 set_include_path(get_include_path() . PATH_SEPARATOR . str_replace('/index.php', '', $_SERVER['SCRIPT_FILENAME']));
 set_include_path(get_include_path() . PATH_SEPARATOR . str_replace('/index.php', '/app', $_SERVER['SCRIPT_FILENAME']));
-//set_include_path(get_include_path() . PATH_SEPARATOR . str_replace('/index.php', '', $_SERVER['SCRIPT_FILENAME']));
 //set_include_path(get_include_path() . PATH_SEPARATOR . '../6d/app');
 if(file_exists('AppConfiguration.php')){
 	class_exists('AppConfiguration') || require('AppConfiguration.php');	
@@ -19,14 +18,5 @@ $logger = new Log('logs/', 0, false, null);
 set_error_handler(array($front_controller, 'errorDidHappen'));
 set_exception_handler(array($front_controller, 'exceptionDidHappen'));
 $output = $front_controller->execute();
-$encoding = FrontController::getEncoding();
-if($encoding !== null){
-	header('Content-Encoding: ' . $encoding);
-	header('Etag: ' . md5($output));
-	echo "\x1f\x8b\x08\x00\x00\x00\x00\x00";
-	$size = strlen($output);
-	$output = gzcompress($output, 9);
-	$output = substr($output, 0, $size);
-}
 echo $output;
 ?>

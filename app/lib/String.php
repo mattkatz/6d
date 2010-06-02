@@ -252,6 +252,11 @@
 			}
 			return $string;
 		}
-		
+		public static function toString($val){
+			if(is_array($val)){
+				return implode(',', $val);
+			}
+			return $val;
+		}
 	}
 ?>

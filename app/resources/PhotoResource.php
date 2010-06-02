@@ -16,7 +16,7 @@
 			if(! AuthController::isAuthorized()){
 				throw new Exception(FrontController::UNAUTHORIZED, 401);
 			}
-			$photo['error_message'] = '';
+			$photo['error_message'] = null;
 			$path = $photo['type'];
 			$width = 0;
 			if(!in_array($photo['type'], array('image/jpg', 'image/jpeg', 'image/gif', 'image/png'))){
@@ -25,7 +25,6 @@
 				$file_type = str_replace('image/', '', $photo['type']);
 				$file_type = String::replace('/jpeg/', 'jpg', $file_type);
 				if(is_uploaded_file($photo['tmp_name'])){
-
 					$photo_name = String::replace('/\.*/', '', uniqid(null, true));
 					$folder = sprintf('media/%s', date('Y'));
 					if(!file_exists($folder)){
@@ -36,7 +35,6 @@
 					if(!file_exists($folder)){
 						mkdir($folder, 0777, true);
 					}
-
 					$folder .= sprintf('/%s', date('j'));
 					if(!file_exists($folder)){
 						mkdir($folder, 0777, true);

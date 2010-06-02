@@ -506,6 +506,7 @@ UIController.Post = function(){
 
 var editor = null;
 var postController;
+
 SDDom.addEventListener(window, 'load', function(e){
 	var postMenu = new UIView.PostMenu('post_menu');
 	var textarea = new UIView.TextArea('body');
@@ -513,17 +514,36 @@ SDDom.addEventListener(window, 'load', function(e){
 	postController = new UIController.Post();
 	textarea.delegate = postController;
 	addressBookController.delegate = postController;
+	SDDom.addEventListener(SDDom('photo'), 'change', photoDidChange);
 });
 
 function photoWasUploaded(photo_name, file_name, photo_path, width){
-	postController.didUploadPhoto(photo_name, file_name, photo_path, width);
+	didUploadPhoto(photo_name, file_name, photo_path, width);
 }
+
 function photoDidChange(e){
-	if($('photo_names[' + this.value + ']')){
+	if(SDDom('photo_names[' + this.value + ']')){
 		alert("you've already added that photo.");
-		e.stop();
+		SDDom.stop(e);
 	}else{
-		$('media_form').submit();
+		SDDom('media_form').submit();
 	}
 }
 
+function didUploadPhoto(photo_name, file_name, photo_path, width, error_message){
+	if(error_message.length > 0){
+		alert(error_message);
+	}else{
+		SDDom('photo').value = null;
+		var dd = SDDom.create('dd');
+		dd.innerHTML = photo_name;
+		var items = SDDom.findAll('#photos dd');
+		var count = 0;
+		if(items && items.length > 0){
+			count = items.length;
+		}
+		var hidden_field = SDDom.create('input', {"type":"hidden", "value":photo_name + '=' + file_name, "id":"photo_names[" + photo_name + "]", "name":"photo_names[]"});
+		SDDom.append(SDDom('photos'), dd);
+		SDDom.append(SDDom.findFirst('#post_form fieldset'), hidden_field);
+	}
+};

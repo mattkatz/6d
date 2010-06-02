@@ -125,10 +125,7 @@
 		public static function stringify($item){
 			return sprintf("'%s'", urlencode($item));
 		}
-		
-		public static function pluck_text($tag){
-			return $tag->text;
-		}
+				
 		public static function pluck($name, $list){
 			$new_list = array();
 			foreach($list as $tag){

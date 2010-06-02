@@ -18,14 +18,6 @@
 		</header>
 		<section class="entry-content">
 			<p><?php echo $post->description;?></p>
-		<?php if( AuthController::isAuthorized()):?>
-			<form action="<?php echo FrontController::urlFor('post');?>" method="post" onsubmit="return confirm('Are you sure you want to delete <?php echo $post->title;?>?');">
-				<input type="hidden" name="id" value="<?php echo $post->id;?>" />
-				<input type="hidden" name="_method" value="delete" />
-				<input type="submit" name="delete_button" value="delete post" />
-		        <a href="<?php echo FrontController::urlFor('post', array('id'=>$post->id, 'last_page_viewed'=>$this->page));?>">edit</a>
-			</form>
-		<?php endif;?>
 		</section>
 			<?php
 				break;
@@ -39,14 +31,6 @@
 		</header>
 		<section class="entry-content">
 			<p><?php echo $post->description;?></p>
-		<?php if( AuthController::isAuthorized()):?>
-			<form action="<?php echo FrontController::urlFor('post');?>" method="post" onsubmit="return confirm('Are you sure you want to delete <?php echo $post->title;?>?');">
-				<input type="hidden" name="id" value="<?php echo $post->id;?>" />
-				<input type="hidden" name="_method" value="delete" />
-				<input type="submit" name="delete_button" value="delete post" />
-		        <a href="<?php echo FrontController::urlFor('post', array('id'=>$post->id, 'last_page_viewed'=>$this->page));?>">edit</a>
-			</form>
-		<?php endif;?>
 		</section>
 			<?php
 				break;
@@ -56,19 +40,20 @@
 		</header>
 		<section class="entry-content">
 			<?php echo $post->body;?>
-			<?php if( AuthController::isAuthorized()):?>
-				<form action="<?php echo FrontController::urlFor('post');?>" method="post" onsubmit="return confirm('Are you sure you want to delete <?php echo $post->title;?>?');">
-					<input type="hidden" name="id" value="<?php echo $post->id;?>" />
-					<input type="hidden" name="_method" value="delete" />
-					<input type="submit" name="delete_button" value="delete post" />
-			        <a href="<?php echo FrontController::urlFor('post', array('id'=>$post->id, 'last_page_viewed'=>$this->page));?>">edit</a>
-				</form>
-			<?php endif;?>
 		</section>
 		<?php 
 			break;
 		}?>
 		<footer class="post-info">
+		<?php if( AuthController::isAuthorized()):?>
+			<form action="<?php echo FrontController::urlFor('post');?><?php if($q !== null){echo '?q=' . $q;}?>" method="post" onsubmit="return confirm('Are you sure you want to delete <?php echo $post->title;?>?');">
+				<input type="hidden" name="id" value="<?php echo $post->id;?>" />
+				<input type="hidden" name="_method" value="delete" />
+				<input type="submit" name="delete_button" value="delete post" />
+				<input type="hidden" name="last_page_viewed" value="<?php echo $page;?>" />
+		        <a href="<?php echo FrontController::urlFor('post', array('id'=>$post->id, 'last_page_viewed'=>$this->page));?>">edit</a>
+			</form>
+		<?php endif;?>
 			<abbr title="<?php echo $post->date;?>">
 				<span class="day"><?php echo date('jS', strtotime($post->post_date));?></span>
 				<span class="month"><?php echo date('M', strtotime($post->post_date));?></span>
@@ -78,18 +63,23 @@
 				<img width="52" height="52" src="<?php echo PostResource::getAuthorUrl($post);?>" alt="<?php echo $post->source;?> photo" />
 				<p><?php echo $post->sourc;?></p>
 			</aside>
+			<aside rel="tags">
+				<?php foreach(String::explodeAndTrim($post->tags) as $text):?>
+				<a href="<?php echo FrontController::urlFor(null, array('tag'=>$text));?>"><?php echo $text;?></a>
+				<?php endforeach;?>
+			</aside>
 		</footer>
 	</article>
 	<?php endforeach;?>
 <?php endif;?>
 	<nav class="pager">
 	<?php if(count($posts) > 0 && $page > 1):?>
-		<a href="<?php echo FrontController::urlFor(($name === 'index' ? null : $name . '/')) . ($page > 1 ? $page-1 : null);?>" title="View newer posts"> ← newer</a>
+		<a href="<?php echo FrontController::urlFor(($name === 'index' ? null : $name . '/')) . ($page > 1 ? $page-1 : null) . ($this->q !== null ? '?q=' . $this->q : null);?>" title="View newer posts"> ← newer</a>
 	<?php else:?>
 		<span> ← newer</span>
 	<?php endif;?>
 <?php if(count($posts) >= $limit):?>
-		<a href="<?php echo FrontController::urlFor(($name === 'index' ? null : $name . '/')) . ($page === 0 ? $page+2 : $page+1);?>" title="View older posts">older → </a>
+		<a href="<?php echo FrontController::urlFor(($name === 'index' ? null : $name . '/')) . ($page === 0 ? $page+2 : $page+1). ($this->q !== null ? '?q=' . $this->q : null);?>" title="View older posts">older → </a>
 <?php else:?>
 		<span>older → </span>
 <?php endif;?>

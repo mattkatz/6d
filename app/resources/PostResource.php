@@ -71,7 +71,7 @@ class PostResource extends AppResource{
 				$url = ProfileResource::getPhotoUrl($person);
 			}
 		}
-		$url = ($url === null ? 'images/nophoto.png' : $url);
+		$url = ($url === null ? FrontController::urlFor('images') . 'nophoto.png' : $url);
 		return $url;		
 	}
 	public function put(Post $post, $people = array(), $groups = array(), $make_home_page = false, $public_key = null, $photo_names = array(), $last_page_viewed = 1){
@@ -81,8 +81,7 @@ class PostResource extends AppResource{
 			$this->last_page_viewed = $last_page_viewed;
 			if($post->id !== null && strlen($post->id) > 0){
 				$this->post = Post::findById($post->id);
-			}
-			
+			}			
 			if($this->post !== null){
 				switch($post->post_date){
 					case('today'):
@@ -182,14 +181,19 @@ class PostResource extends AppResource{
 			$this->redirectTo('posts');
 		}		
 	}
-	public function delete(Post $post, $last_page_viewed){
+	public function delete(Post $post, $last_page_viewed, $q = null){
+		$this->q = $q;
 		if(! AuthController::isAuthorized()){
 			throw new Exception(FrontController::UNAUTHORIZED, 401);
 		}
 		$post = Post::findById($post->id);
 		Post::delete($post);
 		self::setUserMessage(sprintf("'%s' was deleted.", $post->title));
-		$this->redirectTo('posts/' . $last_page_viewed);
+		if($this->q === null){
+			$this->redirectTo('posts/' . $last_page_viewed);
+		}else{
+			$this->redirectTo('posts', array('page'=>$last_page_viewed, 'q'=>$this->q));
+		}
 	}
 	private function sendPostToPeople($groups, $people, Post $post){
 		$data = null;

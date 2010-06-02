@@ -12,12 +12,13 @@ class PostsResource extends AppResource{
 	public $sort_by_direction;
 	public $limit;
 	
-	public function get($id = null){
+	public function get($id = null, $q = null, $limit = 5){
 		if(!AuthController::isAuthorized()){
 			throw new Exception(FrontController::UNAUTHORIZED, 401);
 		}
+		$this->q = $q;
 		$tag = null;	
-		$this->limit = 5;
+		$this->limit = intval($limit);
 		array_shift($this->url_parts);
 		if(count($this->url_parts) > 0){
 			$this->page = intval($this->url_parts[0]);
@@ -37,6 +38,9 @@ class PostsResource extends AppResource{
 		}else if($tag !== null){
 			$this->title = 'All Posts Tagged ' . $tag;
 			$this->posts = $this->getPostsByTag($tag);
+		}else if($this->q !== null){
+			$this->title = "Results for $this->q";
+			$this->posts = Post::search($q, $this->page, $this->limit, $this->sort_by, $this->sort_by_direction);
 		}else{
 			$this->title = 'All Posts';
 			$this->posts = $this->getAllPosts($this->start, $this->limit, $this->sort_by, $this->sort_by_direction);

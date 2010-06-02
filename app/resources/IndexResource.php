@@ -15,8 +15,9 @@ class IndexResource extends AppResource{
 	public $sort_by;
 	public $sort_by_direction;
 	public $limit;
-	public function get($id = 1, $sort_by = 'post_date', $sort_by_direction = 'desc', $direction = null, $tag = null){
+	public function get($id = 1, $sort_by = 'post_date', $sort_by_direction = 'desc', $direction = null, $tag = null, $q = null){
 		$this->limit = 4;
+		$this->q = $q;
 		if(file_exists(FrontController::themePath() . '/HomePage.php')){
 			require(FrontController::themePath() . '/HomePage.php');
 			$home_page = new HomePage();
@@ -58,16 +59,24 @@ class IndexResource extends AppResource{
 		$view = 'post/index';
 		if($this->page < 1){
 			$this->page = 1;
-		}	
-		if($tag == null){
-			if($home_page_post_id != null){
-				$this->post = Post::findHomePage($home_page_post_id);
-				$view = 'post/home';
+		}
+		if($tag !== null){
+			$this->posts = Post::findPublishedByTag(new Tag(array('text'=>$tag)), ($this->page-1) * $this->limit, $this->limit, $this->sort_by, $this->sort_by_direction);	
+		}
+		if($q !== null){
+			if(AuthController::isAuthorized()){
+				$this->posts = Post::search($q, $this->page, $this->limit, $this->sort_by, $this->sort_by_direction);
 			}else{
-				$this->posts = Post::findPublishedPosts(($this->page-1) * $this->limit, $this->limit, $this->sort_by, $this->sort_by_direction);	
+				$this->posts = Post::searchForPublished($q, $this->page, $this->limit, $this->sort_by, $this->sort_by_direction);
 			}
-		}else{
-			$this->posts = Post::findPublishedByTag(new Tag(array('text'=>$tag)), ($this->page-1) * 5, 5, $this->sort_by, $this->sort_by_direction);	
+		}
+		
+		if($this->posts === null){
+			$this->posts = Post::findPublishedPosts(($this->page-1) * $this->limit, $this->limit, $this->sort_by, $this->sort_by_direction);
+		}
+		if($home_page_post_id != null){
+			$this->post = Post::findHomePage($home_page_post_id);
+			$view = 'post/home';
 		}
 		
 		$this->output = $this->renderView($view, null);

@@ -68,9 +68,6 @@ table tr td
 	-webkit-border-radius: 5px 5px;
 	-moz-border-radius: 5px 5px;
 }
-#content article aside{
-	display: none;
-}
 /* ARTICLE */
 article.hentry{
 	border-radius: 10px 10px;

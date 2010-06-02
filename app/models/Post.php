@@ -115,9 +115,6 @@
 			return $this->tags;
 		}
 		public function setTags($val){
-			if(!is_array($val)){
-				$val =  String::explodeAndTrim($val);
-			}
 			$this->tags = $val;
 		}
 		public function getHowLongAgo(){
@@ -139,6 +136,34 @@
 			}
 			return $value;			
 		}
+		
+		public static function searchForPublished($q, $start = 0, $limit = 5, $sort_by = 'post_date', $sort_by_direction = 'desc'){
+			$config = new AppConfiguration();
+			$post = new Post(null);
+			$db = Factory::get($config->db_type, $config);
+			if($sort_by === null || strlen($sort_by) === 0){
+				$sort_by = $post->getTableName() . '.id';
+			}
+			$q = '%' . $q . '%';
+			$query = sprintf("(title like '%s' or description like '%s' or body like '%s') and is_published=1", $q, $q, $q);
+			$list = $db->find(new ByClause($query, $post->relationships, array($start, $limit), array($sort_by=>$sort_by_direction)), $post);
+			$list = ($list == null ? array() : (is_array($list) ? $list : array($list)));
+			return $list;
+		}
+		public static function search($q, $start, $limit, $sort_by, $sort_by_direction = 'desc'){
+			$config = new AppConfiguration();
+			$post = new Post(null);
+			$db = Factory::get($config->db_type, $config);
+			if($sort_by === null || strlen($sort_by) === 0){
+				$sort_by = $post->getTableName() . '.id';
+			}
+			$q = '%' . $q . '%';
+			$query = sprintf("title like '%s' or description like '%s' or body like '%s'", $q, $q, $q);
+			$list = $db->find(new ByClause($query, $post->relationsips, array($start, $limit), array($sort_by=>$sort_by_direction)), $post);
+			$list = ($list == null ? array() : (is_array($list) ? $list : array($list)));
+			return $list;
+		}
+		
 		public static function findAll(){
 			$config = new AppConfiguration();				
 			$db = Factory::get($config->db_type, $config);
@@ -287,7 +312,6 @@
 				$post->custom_url = String::stringForUrl($post->title);
 				$new_post = $db->save(null, $post);
 				$post->id = $new_post->id;
-				$tags = String::explodeAndTrim($post->tags);
 				$existing_tags = Tag::findAllForPost($post->id);
 				if($existing_tags != null){
 					foreach($existing_tags as $tag){
@@ -295,7 +319,7 @@
 					}
 				}
 
-				foreach($tags as $tag_text){
+				foreach($post->tags as $tag_text){
 					if($existing_tags == null || !in_array($tag_text, $existing_tags)){
 						Tag::save(new Tag(array('parent_id'=>$post->id, 'type'=>'post', 'text'=>$tag_text)));
 					}
