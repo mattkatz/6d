@@ -1,9 +1,8 @@
 <?php
 	date_default_timezone_set('America/Chicago');
-	$_appPath = str_replace('/tests/index.php', '', __FILE__);
+	$_appPath = str_replace(sprintf('%stests%sindex.php', DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR), '/app/', __FILE__);
 	$output = '';
 	set_include_path(get_include_path() . PATH_SEPARATOR . $_appPath . PATH_SEPARATOR);
-	//require('AppConfiguration.php');
 	if(!isset($_SESSION))
 		$_SESSION = array();
 

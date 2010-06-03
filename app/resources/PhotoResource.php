@@ -22,7 +22,7 @@
 			if(!in_array($photo['type'], array('image/jpg', 'image/jpeg', 'image/gif', 'image/png'))){
 				$photo['error_message'] = "I don't accept that type of file.";
 			}else{
-				$file_type = str_replace('image/', '', $photo['type']);
+				$file_type = str_replace(sprintf('image%s', '/'), '', $photo['type']);
 				$file_type = String::replace('/jpeg/', 'jpg', $file_type);
 				if(is_uploaded_file($photo['tmp_name'])){
 					$photo_name = String::replace('/\.*/', '', uniqid(null, true));

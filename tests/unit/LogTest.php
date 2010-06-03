@@ -14,7 +14,7 @@
 		public function tearDown(){}
 		
 		public function testWriting(){
-			$segments = explode('/', str_replace('tests/', '', __FILE__));
+			$segments = explode(DIRECTORY_SEPARATOR, str_replace(sprintf('tests%s', DIRECTORY_SEPARATOR), '', __FILE__));
 			array_pop($segments);
 			array_pop($segments);
 			$this->path = implode('/', $segments) . '/logs/';

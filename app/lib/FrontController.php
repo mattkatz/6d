@@ -268,7 +268,7 @@ class FrontController extends Object{
 		on my dev box like http://localhost/sixd/. The virtual path in this case is "sixd".
 	*/
 	public static function getVirtualPath(){
-		return String::replace('/^\//', '', str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']));
+		return String::replace('/^\//', '', str_replace(sprintf('%sindex.php', '/'), '', $_SERVER['SCRIPT_NAME']));
 	}
 	
 	/*
@@ -277,7 +277,7 @@ class FrontController extends Object{
 		"/Library/WebServer/Documents/sixd"
 	*/
 	public static function getAppPath($file){
-		return str_replace('lib/FrontController.php', $file, __FILE__);
+		return str_replace(sprintf('lib%sFrontController.php', DIRECTORY_SEPARATOR), $file, __FILE__);
 	}
 	
 	public static function getEncoding(){
